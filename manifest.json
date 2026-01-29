@@ -13,5 +13,9 @@
   "content_scripts": [{
     "matches": ["https://music.youtube.com/*"],
     "js": ["Badge.js","YtMusic.js"]
+  },
+  {
+    "matches": ["https://music.apple.com/*"],
+    "js": ["Badge.js","appleMusic.js"]
   }]
 }
