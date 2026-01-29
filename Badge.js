@@ -160,11 +160,9 @@ if (container.querySelector('.ai-popup')) return;
 
  popup.style.cssText = `
         position: fixed;
-        bottom: 70%;     
         left: ${rect.left + (rect.width / 2)}px;
-        transform: translateX(-50%);
         top: ${rect.top - 100}px;
-        transform: translate(-50%, -100%);
+        transform: translateX(-50%);
         width: 300px;
         background: #ff611d;
         color: white;
