@@ -151,7 +151,6 @@ function showPopup(container, badge, human) {
     popup.className = "ai-popup";
         popup.textContent = human ? "Looks human!" : "AI-generated";
 
-    // ONE line instead of 7+
     popup.style.cssText = `
         position: absolute;
         left: 0;
@@ -165,7 +164,6 @@ function showPopup(container, badge, human) {
     `;
 
     container.appendChild(popup);
-    console.log('is it there?');
 
 }
 
@@ -175,7 +173,6 @@ function hidePopup() {
   const popup = document.querySelector('.ai-popup');
   if (popup) {
     popup.remove();
-    console.log("Popup hidden");
   }
 }
 
