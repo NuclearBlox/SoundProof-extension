@@ -20,15 +20,12 @@ chrome.storage.local.get('aiArtist', (result) => {
              ShowWarningBadge(AIwidth, badgeLocation);
         }else{
             ShowHumanBadge(humanWidth, badgeLocation);
-           }
-
-
+        }
     } else {
         console.log("Artist element not found");
-    }
     }
 
 
 });
     
-    
+}
