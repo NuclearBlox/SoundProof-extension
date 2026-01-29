@@ -155,8 +155,8 @@ async function showPopup(container, badge, human) {
 
     popup.style.cssText = `
         position: absolute;
-        left: 0;
-        right: 0;
+        left: 50%;
+        right: 110%;
         bottom: 0;
         background: #ff611d;
         color: white;
