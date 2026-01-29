@@ -140,9 +140,13 @@ function RemoveBadges() {
     }
 }
 
+let hideTimer;
 
 async function showPopup(container, badge, human) {
+clearTimeout(hideTimer);
+if (container.querySelector('.ai-popup')) return;
 
+    
     const HoverUI = chrome.runtime.getURL('Hover.html');
     
     const response = await fetch(HoverUI);
@@ -152,29 +156,47 @@ async function showPopup(container, badge, human) {
     popup.className = 'ai-popup';
     popup.innerHTML = hoverHTML;
 
+    const rect = badge.getBoundingClientRect();
 
-    popup.style.cssText = `
-        position: absolute;
-        left: 50%;
-        right: 110%;
-        bottom: 0;
+ popup.style.cssText = `
+        position: fixed;
+        bottom: 70%;     
+        left: ${rect.left + (rect.width / 2)}px;
+        transform: translateX(-50%);
+        top: ${rect.top - 100}px;
+        transform: translate(-50%, -100%);
+        width: 300px;
         background: #ff611d;
         color: white;
-        padding: 20px;
-        border-radius: 8px;
-        z-index: 10000;
+        padding: 15px;
+        border-radius: 12px;
+        z-index: 2147483647;
+        
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        pointer-events: auto; 
     `;
 
-    container.appendChild(popup);
+    popup.addEventListener('mouseenter', () => {
+        clearTimeout(hideTimer);
+    });
+
+    popup.addEventListener('mouseleave', () => {
+        hidePopup();
+    });
+
+    document.body.appendChild(popup);
 
 }
 
 
 
 function hidePopup() {
-  const popup = document.querySelector('.ai-popup');
-  if (popup) {
-    popup.remove();
-  }
+    // Instead of deleting immediately, we wait 100ms
+    // This gives the mouse time to travel across the gap
+    hideTimer = setTimeout(() => {
+        const popup = document.querySelector('.ai-popup');
+        if (popup) {
+            popup.remove();
+        }
+    }, 100); 
 }
-
