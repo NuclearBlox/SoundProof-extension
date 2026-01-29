@@ -29,3 +29,5 @@ chrome.storage.local.get('aiArtist', (result) => {
 });
     
 }
+
+

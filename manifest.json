@@ -12,10 +12,10 @@
   },
   "content_scripts": [{
     "matches": ["https://music.youtube.com/*"],
-    "js": ["Utils/Badge.js","Utils/DecideBadge.js","Platforms/YtMusic.js"]
+    "js": ["Utils/Badge.js","Utils/processCurrentSong.js","Platforms/YtMusic.js"]
   },
   {
     "matches": ["https://music.apple.com/*"],
-    "js": ["Utils/Badge.js","Utils/DecideBadge.js","Platforms/appleMusic.js"]
+    "js": ["Utils/Badge.js","Utils/processCurrentSong.js","Platforms/appleMusic.js"]
   }]
 }
