@@ -44,7 +44,7 @@ RemoveBadges()
 
 const badge = document.createElement('img');
 badge.className = 'ai-warning-badge';
-badge.src = chrome.runtime.getURL('ArtistUsesAI.png');
+badge.src = chrome.runtime.getURL('Icons/ArtistUsesAI.png');
 
 badge.style.width = width;
 //badge.style.height = '50px';
@@ -97,7 +97,7 @@ RemoveBadges()
 
 const badge = document.createElement('img');
 badge.className = 'human-badge';
-badge.src = chrome.runtime.getURL('LooksHuman.png');
+badge.src = chrome.runtime.getURL('Icons/LooksHuman.png');
 
 badge.style.width = width;
 //badge.style.height = '50px';
@@ -147,7 +147,7 @@ clearTimeout(hideTimer);
 if (container.querySelector('.ai-popup')) return;
 
     
-    const HoverUI = chrome.runtime.getURL('Hover.html');
+    const HoverUI = chrome.runtime.getURL('Utils/Hover.html');
     
     const response = await fetch(HoverUI);
     const hoverHTML = await response.text();

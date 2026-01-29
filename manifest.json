@@ -4,7 +4,7 @@
   "version": "1.0",
   "permissions": ["storage"],
   "web_accessible_resources": [{
-    "resources": ["ArtistUsesAI.png","LooksHuman.png", "Hover.html"],
+    "resources": ["Icons/ArtistUsesAI.png", "Icons/LooksHuman.png", "Utils/Hover.html"],
     "matches": ["<all_urls>"]
   }],
   "background": {
@@ -12,10 +12,10 @@
   },
   "content_scripts": [{
     "matches": ["https://music.youtube.com/*"],
-    "js": ["Badge.js","YtMusic.js"]
+    "js": ["Utils/Badge.js","Platforms/YtMusic.js"]
   },
   {
     "matches": ["https://music.apple.com/*"],
-    "js": ["Badge.js","appleMusic.js"]
+    "js": ["Utils/Badge.js","Platforms/appleMusic.js"]
   }]
 }
