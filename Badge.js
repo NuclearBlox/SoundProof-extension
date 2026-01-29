@@ -127,8 +127,8 @@ console.log("Should be there");
 
 
 function RemoveBadges() {
-    const Aibadge = document.querySelector('.ai-warning-badge');
-    const Humanbadge = document.querySelector('.human-badge');
+    const Aibadge = document.querySelector('.ai-warning-container');
+    const Humanbadge = document.querySelector('.human-container');
     if (Aibadge) {
         Aibadge.remove();
         console.log("Badge removed");
