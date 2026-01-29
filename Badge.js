@@ -141,15 +141,17 @@ function RemoveBadges() {
 }
 
 
-function showPopup(container, badge, human) {
+async function showPopup(container, badge, human) {
 
-
-    const rect = badge.getBoundingClientRect();
-
+    const HoverUI = chrome.runtime.getURL('Hover.html');
+    
+    const response = await fetch(HoverUI);
+    const hoverHTML = await response.text();
 
     const popup = document.createElement('div');
-    popup.className = "ai-popup";
-        popup.textContent = human ? "Looks human!" : "AI-generated";
+    popup.className = 'ai-popup';
+    popup.innerHTML = hoverHTML;
+
 
     popup.style.cssText = `
         position: absolute;
