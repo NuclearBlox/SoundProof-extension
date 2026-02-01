@@ -27,10 +27,6 @@ if (!Placement) {
     return;
 }
 const alreadyThere = document.querySelector('.ai-warning-container')
-if (alreadyThere) {
-    console.log("Already told em");
-    return;
-}
 RemoveBadges()
 
   const container = document.createElement('div');
@@ -79,11 +75,6 @@ if (!Placement) {
     console.log("Screwed up");
     return;
 }
-const alreadyThere = document.querySelector('.human-container')
-if (alreadyThere) {
-    console.log("Already told em");
-    return;
-}
 RemoveBadges()
 
   const container = document.createElement('div');
@@ -125,18 +116,23 @@ console.log("Should be there");
 
 
 
-
 function RemoveBadges() {
     const Aibadge = document.querySelector('.ai-warning-container');
     const Humanbadge = document.querySelector('.human-container');
+    const popup = document.querySelector('.ai-popup');
+    
     if (Aibadge) {
         Aibadge.remove();
-        console.log("Badge removed");
+        console.log("AI Badge removed");
     }
     
     if (Humanbadge) {
         Humanbadge.remove();
-        console.log("Badge removed");
+        console.log("Human Badge removed");
+    }
+    
+    if (popup) {
+        popup.remove();
+        console.log("Popup removed");
     }
 }
-

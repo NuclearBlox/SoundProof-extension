@@ -18,8 +18,10 @@ let hideTimer;
 
 async function showPopup(container, badge, human, artist) {
 clearTimeout(hideTimer);
-if (document.body.querySelector('.ai-popup')) return;
-
+    const existingPopup = document.body.querySelector('.ai-popup');
+    if (existingPopup) {
+        existingPopup.remove();
+    }
     
     const HoverUI = chrome.runtime.getURL('Utils/warning.html');
     
@@ -90,7 +92,7 @@ if (document.body.querySelector('.ai-popup')) return;
     } else {
         popup.querySelector('.description').textContent = "No additional information available.";
     }
-
+    popup.querySelector('.status-label').textContent = "AI artist!!";
         // 3. SET THE TAGS
     const tagsContainer = popup.querySelector('.tags-container');
     tagsContainer.innerHTML = ''; // Clear the default tags
