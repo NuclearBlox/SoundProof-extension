@@ -35,7 +35,7 @@ if (document.body.querySelector('.ai-popup')) return;
  popup.style.cssText = `
         position: fixed;
         left: ${rect.left + (rect.width / 2)}px;
-        top: ${rect.top - 350}px;
+        top: ${rect.top - 250}px;
         transform: translateX(-50%);
         width: 300px;
         padding: 15px;
@@ -62,18 +62,59 @@ if (document.body.querySelector('.ai-popup')) return;
 
     // Deal with giving the UI the correct info
 
-    const artistJson = await getArtistData("1950 SoulClub");
 
     document.body.appendChild(popup);
 
-    popup.querySelector('#popup-artist-name').textContent = artistJson.name;
-    if (artistJson.markerNotes && artistJson.markerNotes !== "") {
-        popup.querySelector('#body > div.ai-popup > div > div.description').textContent = artistJson.markerNotes;
-    } else {
-        popup.querySelector('#body > div.ai-popup > div > div.description').textContent = "No additional information available.";
-    }
-}
+    if (human === true) {
 
+    popup.querySelector('#popup-artist-name').textContent = artist;
+    popup.querySelector('.status-label').textContent = "Looks human!";
+    const tagsContainer = popup.querySelector('.tags-container');
+    tagsContainer.innerHTML = '';
+    popup.querySelector('.description').textContent = "This artist is not listed on SoulOverAI. If it isnt suspicious it is probably human!";
+
+    const button = popup.querySelector('.button-primary');
+    button.textContent = "Report to SoulOverAI";
+    button.onclick = () => {
+        window.open(`https://souloverai.com/add`, '_blank');
+    };
+
+    } else {
+
+    const artistJson = await getArtistData(artist);
+
+    popup.querySelector('#popup-artist-name').textContent = artistJson.name;
+
+    if (artistJson.markerNotes && artistJson.markerNotes !== "") {
+        popup.querySelector('.description').textContent = artistJson.markerNotes;
+    } else {
+        popup.querySelector('.description').textContent = "No additional information available.";
+    }
+
+        // 3. SET THE TAGS
+    const tagsContainer = popup.querySelector('.tags-container');
+    tagsContainer.innerHTML = ''; // Clear the default tags
+    
+    // artistJson.markers is an array like ["ai-visuals", "anonymous"]
+    artistJson.markers.forEach(marker => {
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.textContent = marker;
+        tagsContainer.appendChild(tag);
+    });
+
+        const button = popup.querySelector('.button-primary');
+            button.textContent = "View on SoulOverAI";
+    button.onclick = () => {
+        window.open(`https://souloverai.com/artist/${artistJson.id}`, '_blank');
+    };
+
+
+    }
+
+
+
+}
 
 
 function hidePopup() {
