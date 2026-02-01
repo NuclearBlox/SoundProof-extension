@@ -58,6 +58,12 @@ try {
         hidePopup();
     });
 
+    // Check and set checkbox
+    const checkbox = popup.querySelector('#popup-checkbox');
+    if (checkbox) {
+        checkbox.checked = false;
+        checkbox.checked = true;
+    }
 
 
 
@@ -123,11 +129,12 @@ try {
 }
 
 
-function Skip(element) {
-    if (element && typeof element.click === 'function') {
-        console.log("Skipping using provided element:", element);
-        element.click();
-    } else {
-        console.warn("Skip failed: No valid clickable element provided.");
-    }
+
+function hidePopup() {
+    hideTimer = setTimeout(() => {
+        const popup = document.querySelector('.ai-popup');
+        if (popup) {
+            popup.remove();
+        }
+    }, 100); 
 }

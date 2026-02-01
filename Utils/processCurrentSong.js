@@ -22,7 +22,6 @@ chrome.storage.local.get('aiArtist', (result) => {
              Skip(skipElement);
         }else{
             ShowHumanBadge(humanWidth, badgeLocation, artist);
-            Skip(skipElement);
         }
     } else {
         console.log("Artist element not found");
@@ -34,9 +33,6 @@ chrome.storage.local.get('aiArtist', (result) => {
 }
 
 function Skip(skipElement) {
-        console.log("Attempting to skip song");
-    const buttons = document.querySelectorAll('#button');
-    const nextButton = Array.from(buttons).find(el => el.getAttribute('name') === skipElement);
-    nextButton.click();
+    skipElement.click();
     console.log("Skipped song");
 }
