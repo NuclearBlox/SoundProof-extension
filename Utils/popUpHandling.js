@@ -1,7 +1,7 @@
 
 let hideTimer;
 
-async function showPopup(container, badge, human) {
+async function showPopup(container, badge, human, artist) {
 clearTimeout(hideTimer);
 if (document.body.querySelector('.ai-popup')) return;
 
@@ -52,6 +52,10 @@ if (document.body.querySelector('.ai-popup')) return;
 
     
     document.body.appendChild(popup);
+
+    popup.querySelector('#popup-artist-name').textContent = artist;
+
+    // #popup-artist-name
 
 }
 

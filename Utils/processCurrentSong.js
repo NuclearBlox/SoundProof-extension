@@ -18,7 +18,7 @@ chrome.storage.local.get('aiArtist', (result) => {
 
         console.log("Is AI?", isAI)     
         if (isAI) {
-             ShowWarningBadge(AIwidth, badgeLocation);
+             ShowWarningBadge(AIwidth, badgeLocation, artist);
         }else{
             ShowHumanBadge(humanWidth, badgeLocation);
         }
