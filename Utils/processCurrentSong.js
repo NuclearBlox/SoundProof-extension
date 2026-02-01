@@ -19,7 +19,13 @@ chrome.storage.local.get('aiArtist', (result) => {
         console.log("Is AI?", isAI)     
         if (isAI) {
              ShowWarningBadge(AIwidth, badgeLocation, artist);
-             Skip(skipElement);
+            chrome.storage.local.get('skipAI', (result) => {
+            var skipAI = result.skipAI || false;
+            if (skipAI === true) {
+                Skip(skipElement);
+            }
+        });
+
         }else{
             ShowHumanBadge(humanWidth, badgeLocation, artist);
         }
