@@ -1,4 +1,19 @@
 
+
+async function getArtistData(artistName) {
+    const response = await fetch('https://raw.githubusercontent.com/xoundbyte/soul-over-ai/main/dist/artists.json');
+    const allArtists = await response.json();
+    
+
+    const artistData = allArtists.find(artist => 
+        artist.name.toLowerCase() === artistName.toLowerCase()
+    );
+    
+    return artistData; 
+}
+
+
+
 let hideTimer;
 
 async function showPopup(container, badge, human, artist) {
@@ -45,25 +60,23 @@ if (document.body.querySelector('.ai-popup')) return;
 
 
 
+    // Deal with giving the UI the correct info
 
+    const artistJson = await getArtistData("1950 SoulClub");
 
-
-
-
-    
     document.body.appendChild(popup);
 
-    popup.querySelector('#popup-artist-name').textContent = artist;
-
-    // #popup-artist-name
-
+    popup.querySelector('#popup-artist-name').textContent = artistJson.name;
+    if (artistJson.markerNotes && artistJson.markerNotes !== "") {
+        popup.querySelector('#body > div.ai-popup > div > div.description').textContent = artistJson.markerNotes;
+    } else {
+        popup.querySelector('#body > div.ai-popup > div > div.description').textContent = "No additional information available.";
+    }
 }
 
 
 
 function hidePopup() {
-    // Instead of deleting immediately, we wait 100ms
-    // This gives the mouse time to travel across the gap
     hideTimer = setTimeout(() => {
         const popup = document.querySelector('.ai-popup');
         if (popup) {

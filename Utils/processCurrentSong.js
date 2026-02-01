@@ -12,7 +12,7 @@ chrome.storage.local.get('aiArtist', (result) => {
 
 
            if (artistElement) {
-            const artist = artistElement.textContent.trim();
+            let artist = artistElement.textContent.trim();
 
             const isAI = artistNames.includes(artist.toLowerCase());
 
@@ -20,7 +20,7 @@ chrome.storage.local.get('aiArtist', (result) => {
         if (isAI) {
              ShowWarningBadge(AIwidth, badgeLocation, artist);
         }else{
-            ShowHumanBadge(humanWidth, badgeLocation);
+            ShowHumanBadge(humanWidth, badgeLocation, artist);
         }
     } else {
         console.log("Artist element not found");

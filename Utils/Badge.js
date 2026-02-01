@@ -57,7 +57,7 @@ badge.style.animation = 'glow-pulse 2s ease-in-out infinite';
 
 container.appendChild(badge);
 container.addEventListener('mouseenter', () => {
-    showPopup(container, badge, artist)
+    showPopup(container, badge,false, artist)
 });
 
 container.addEventListener('mouseleave', () => {
@@ -108,7 +108,7 @@ badge.style.opacity = '.75';
 
 container.appendChild(badge);
 container.addEventListener('mouseenter', () => {
-    showPopup(container, badge, artist)
+    showPopup(container, badge,true, artist)
 });
 
 container.addEventListener('mouseleave', () => {
