@@ -11,7 +11,7 @@ function checkAndUpdateBadge() {
         if (newArtist !== currentArtist) {
             console.log("Artist changed from", currentArtist, "to", newArtist);
             currentArtist = newArtist;
-            DecideBadge('75px', '50px', '.subtitle.ytmusic-player-bar a', '#left-controls > span');
+            DecideBadge('75px', '50px', '.subtitle.ytmusic-player-bar a', '#left-controls > span', 'Next');
         }
     }
 }

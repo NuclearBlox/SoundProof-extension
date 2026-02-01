@@ -23,10 +23,12 @@ clearTimeout(hideTimer);
         existingPopup.remove();
     }
     
-    const HoverUI = chrome.runtime.getURL('Utils/warning.html');
-    
-    const response = await fetch(HoverUI);
-    const hoverHTML = await response.text();
+try {
+        const HoverUI = chrome.runtime.getURL('Utils/warning.html');
+        const response = await fetch(HoverUI);
+        const hoverHTML = await response.text();
+
+
 
     const popup = document.createElement('div');
     popup.className = 'ai-popup';
@@ -114,7 +116,9 @@ clearTimeout(hideTimer);
 
     }
 
-
+    } catch (err) {
+        console.error("Popup failed to load:", err);
+    }
 
 }
 
