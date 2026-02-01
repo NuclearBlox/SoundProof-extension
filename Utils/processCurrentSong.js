@@ -1,6 +1,6 @@
 
 
-function DecideBadge(AIwidth, humanWidth, selector, badgeLocation, skipButton){
+function DecideBadge(AIwidth, humanWidth, selector, badgeLocation, skipElement){
     
 chrome.storage.local.get('aiArtist', (result) => {
 
@@ -19,10 +19,10 @@ chrome.storage.local.get('aiArtist', (result) => {
         console.log("Is AI?", isAI)     
         if (isAI) {
              ShowWarningBadge(AIwidth, badgeLocation, artist);
-             Skip(skipButton);
+             Skip(skipElement);
         }else{
             ShowHumanBadge(humanWidth, badgeLocation, artist);
-            Skip(skipButton);
+            Skip(skipElement);
         }
     } else {
         console.log("Artist element not found");
@@ -33,9 +33,10 @@ chrome.storage.local.get('aiArtist', (result) => {
     
 }
 
-function Skip(skipButton) {
+function Skip(skipElement) {
+        console.log("Attempting to skip song");
     const buttons = document.querySelectorAll('#button');
-    const nextButton = Array.from(buttons).find(el => el.textContent.trim() === skipButton);
-    nextButton?.click();
+    const nextButton = Array.from(buttons).find(el => el.getAttribute('name') === skipElement);
+    nextButton.click();
     console.log("Skipped song");
 }

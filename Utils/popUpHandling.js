@@ -123,11 +123,11 @@ try {
 }
 
 
-function hidePopup() {
-    hideTimer = setTimeout(() => {
-        const popup = document.querySelector('.ai-popup');
-        if (popup) {
-            popup.remove();
-        }
-    }, 100); 
+function Skip(element) {
+    if (element && typeof element.click === 'function') {
+        console.log("Skipping using provided element:", element);
+        element.click();
+    } else {
+        console.warn("Skip failed: No valid clickable element provided.");
+    }
 }
