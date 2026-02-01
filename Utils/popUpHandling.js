@@ -58,23 +58,33 @@ try {
         hidePopup();
     });
 
-    // Check and set checkbox
-    const checkbox = popup.querySelector('#popup-checkbox');
-    if (checkbox) {
-        checkbox.checked = false;
-        checkbox.checked = true;
-    }
 
 
 
 
 
 
-    // Deal with giving the UI the correct info
 
+
+
+    
 
     document.body.appendChild(popup);
 
+    // Check and set checkbox
+    const checkbox = popup.querySelector('#skip-ai-checkbox');
+    if (checkbox) {
+
+        chrome.storage.local.get('skipAI', (result) => {
+            checkbox.checked = result.skipAI || false;
+        });
+
+        checkbox.addEventListener('change', () => {
+            chrome.storage.local.set({ skipAI: checkbox.checked });
+        });
+    }
+
+    // Deal with giving the UI the correct info
     if (human === true) {
 
     popup.querySelector('#popup-artist-name').textContent = artist;
