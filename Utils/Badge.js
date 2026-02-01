@@ -18,7 +18,7 @@ document.head.appendChild(style);
 
 
 
-function ShowWarningBadge(width, selector) {
+function ShowWarningBadge(width, selector, artist) {
 
 const Placement = document.querySelector(selector);
 
@@ -27,10 +27,6 @@ if (!Placement) {
     return;
 }
 const alreadyThere = document.querySelector('.ai-warning-container')
-if (alreadyThere) {
-    console.log("Already told em");
-    return;
-}
 RemoveBadges()
 
   const container = document.createElement('div');
@@ -57,7 +53,7 @@ badge.style.animation = 'glow-pulse 2s ease-in-out infinite';
 
 container.appendChild(badge);
 container.addEventListener('mouseenter', () => {
-    showPopup(container, badge)
+    showPopup(container, badge,false, artist)
 });
 
 container.addEventListener('mouseleave', () => {
@@ -71,17 +67,12 @@ console.log("Should be there");
 
 }
 
-function ShowHumanBadge(width, selector) {
+function ShowHumanBadge(width, selector, artist) {
 
 const Placement = document.querySelector(selector);
 
 if (!Placement) {
     console.log("Screwed up");
-    return;
-}
-const alreadyThere = document.querySelector('.human-container')
-if (alreadyThere) {
-    console.log("Already told em");
     return;
 }
 RemoveBadges()
@@ -108,7 +99,7 @@ badge.style.opacity = '.75';
 
 container.appendChild(badge);
 container.addEventListener('mouseenter', () => {
-    showPopup(container, badge)
+    showPopup(container, badge,true, artist)
 });
 
 container.addEventListener('mouseleave', () => {
@@ -125,18 +116,23 @@ console.log("Should be there");
 
 
 
-
 function RemoveBadges() {
     const Aibadge = document.querySelector('.ai-warning-container');
     const Humanbadge = document.querySelector('.human-container');
+    const popup = document.querySelector('.ai-popup');
+    
     if (Aibadge) {
         Aibadge.remove();
-        console.log("Badge removed");
+        console.log("AI Badge removed");
     }
     
     if (Humanbadge) {
         Humanbadge.remove();
-        console.log("Badge removed");
+        console.log("Human Badge removed");
+    }
+    
+    if (popup) {
+        popup.remove();
+        console.log("Popup removed");
     }
 }
-

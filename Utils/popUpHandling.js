@@ -1,12 +1,29 @@
 
+
+async function getArtistData(artistName) {
+    const response = await fetch('https://raw.githubusercontent.com/xoundbyte/soul-over-ai/main/dist/artists.json');
+    const allArtists = await response.json();
+    
+
+    const artistData = allArtists.find(artist => 
+        artist.name.toLowerCase() === artistName.toLowerCase()
+    );
+    
+    return artistData; 
+}
+
+
+
 let hideTimer;
 
-async function showPopup(container, badge, human) {
+async function showPopup(container, badge, human, artist) {
 clearTimeout(hideTimer);
-if (container.querySelector('.ai-popup')) return;
-
+    const existingPopup = document.body.querySelector('.ai-popup');
+    if (existingPopup) {
+        existingPopup.remove();
+    }
     
-    const HoverUI = chrome.runtime.getURL('Utils/Hover.html');
+    const HoverUI = chrome.runtime.getURL('Utils/warning.html');
     
     const response = await fetch(HoverUI);
     const hoverHTML = await response.text();
@@ -20,11 +37,9 @@ if (container.querySelector('.ai-popup')) return;
  popup.style.cssText = `
         position: fixed;
         left: ${rect.left + (rect.width / 2)}px;
-        top: ${rect.top - 100}px;
+        top: ${rect.top - 250}px;
         transform: translateX(-50%);
         width: 300px;
-        background: #ff611d;
-        color: white;
         padding: 15px;
         border-radius: 12px;
         z-index: 2147483647;
@@ -41,15 +56,70 @@ if (container.querySelector('.ai-popup')) return;
         hidePopup();
     });
 
+
+
+
+
+
+
+    // Deal with giving the UI the correct info
+
+
     document.body.appendChild(popup);
+
+    if (human === true) {
+
+    popup.querySelector('#popup-artist-name').textContent = artist;
+    popup.querySelector('.status-label').textContent = "Looks human!";
+    const tagsContainer = popup.querySelector('.tags-container');
+    tagsContainer.innerHTML = '';
+    popup.querySelector('.description').textContent = "This artist is not listed on SoulOverAI. If it isnt suspicious it is probably human!";
+
+    const button = popup.querySelector('.button-primary');
+    button.textContent = "Report to SoulOverAI";
+    button.onclick = () => {
+        window.open(`https://souloverai.com/add`, '_blank');
+    };
+
+    } else {
+
+    const artistJson = await getArtistData(artist);
+
+    popup.querySelector('#popup-artist-name').textContent = artistJson.name;
+
+    if (artistJson.markerNotes && artistJson.markerNotes !== "") {
+        popup.querySelector('.description').textContent = artistJson.markerNotes;
+    } else {
+        popup.querySelector('.description').textContent = "No additional information available.";
+    }
+    popup.querySelector('.status-label').textContent = "AI artist!!";
+        // 3. SET THE TAGS
+    const tagsContainer = popup.querySelector('.tags-container');
+    tagsContainer.innerHTML = ''; // Clear the default tags
+    
+    // artistJson.markers is an array like ["ai-visuals", "anonymous"]
+    artistJson.markers.forEach(marker => {
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.textContent = marker;
+        tagsContainer.appendChild(tag);
+    });
+
+        const button = popup.querySelector('.button-primary');
+            button.textContent = "View on SoulOverAI";
+    button.onclick = () => {
+        window.open(`https://souloverai.com/artist/${artistJson.id}`, '_blank');
+    };
+
+
+    }
+
+
 
 }
 
 
-
 function hidePopup() {
-    // Instead of deleting immediately, we wait 100ms
-    // This gives the mouse time to travel across the gap
     hideTimer = setTimeout(() => {
         const popup = document.querySelector('.ai-popup');
         if (popup) {

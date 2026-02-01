@@ -12,6 +12,6 @@ fetch("https://raw.githubusercontent.com/xoundbyte/soul-over-ai/main/dist/artist
     function isAIArtist(artistName) {
       const LowerCaseName = artistName.toLowerCase();
 
-      return artistNames.includes(LowerCaseName);
+      return artistNames.includes(LowerCaseName, data);
     }
   });
