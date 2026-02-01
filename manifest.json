@@ -4,8 +4,11 @@
   "version": "1.0",
   "permissions": ["storage"],
   "web_accessible_resources": [{
-    "resources": ["Icons/ArtistUsesAI.png", "Icons/LooksHuman.png", "Utils/warning.html"],
-    "matches": ["<all_urls>"]
+    "resources": [
+      "Icons/*",
+      "Utils/*"
+    ],
+    "matches": ["https://music.youtube.com/*", "https://music.apple.com/*"]
   }],
   "background": {
     "service_worker": "background.js"
