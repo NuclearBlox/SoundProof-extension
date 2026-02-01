@@ -1,38 +1,170 @@
-
 <style>
   .ai-popup-content {
-    font-family: 'Roboto', sans-serif;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 200px;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 12px;
+    min-width: 280px;
+    max-width: 320px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   }
-  .ai-title {
+  
+  /* Artist name at the top */
+  .artist-name {
+    font-size: 24px;
     font-weight: bold;
-    font-size: 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.3);
-    padding-bottom: 4px;
+    margin-bottom: 2px;
+    color: hsl(15, 63%, 58%);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
-  .ai-desc {
+  
+  /* Status label (AI artist, etc.) */
+  .status-label {
     font-size: 12px;
-    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 6px;
+    margin-left: 5px;
   }
-  .ai-footer {
-    font-size: 10px;
-    text-transform: uppercase;
-    opacity: 0.8;
-    margin-top: 5px;
+  
+  /* Container for tags */
+  .tags-container {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  
+  /* Individual tag style */
+  .tag {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: #ffffff;
+  }
+  
+  /* Description/comment box */
+  .description {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  /* Button styling */
+.popup-button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.3px;
+  }
+  
+  .button-primary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .button-primary:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+  }
+  
+  .button-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .button-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+  }
+  
+  /* Checkbox area at bottom */
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    margin-top: 0px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  
+  .checkbox-container input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+  }
+  
+  .checkbox-label {
+    cursor: pointer;
+    user-select: none;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  /* Small text in bottom right */
+  .footer-note {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: right;
+    margin-top: 4px;
   }
 </style>
 
 <div class="ai-popup-content">
-  <div class="ai-title">This popup still needs a LOT of work! ignore it</div>
-  <div class="ai-desc">
-    One day this will <b>Look good</b> once i figure out <b>HTML</b> one day.
+  <!-- Artist Name -->
+  <div class="artist-name" id="popup-artist-name">1950 SoulClub</div>
+  
+  <!-- Status Label -->
+  <div class="status-label">AI artist</div>
+  
+  <!-- Tags -->
+  <div class="tags-container">
+    <span class="tag">Minimal bio</span>
+    <span class="tag">Anonymous</span>
+    <span class="tag">Other tag</span>
   </div>
-  <div class="ai-footer">Hey!/div>
-  <label>
-	<input type="checkbox" name="myCheckbox">
-	Skip ai music (not implemented)
-</label>
+  
+  <!-- Description/Comment -->
+  <div class="description">
+    On the artist's Spotify page, the 'Discovered On' section features playlists consisting entirely of AI cover songs.
+  </div>
+  
+  <!-- Buttons -->
+  <button class="popup-button button-primary" onclick="window.open('https://souloverai.com', '_blank')">
+    View on SoulOverAI
+  </button>
+  
+  <!-- Skip AI songs checkbox -->
+  <div class="checkbox-container">
+    <input type="checkbox" id="skip-ai-checkbox">
+    <label for="skip-ai-checkbox" class="checkbox-label">Skip AI songs</label>
+      <div class="footer-note">This plugin isn't affiliated with SoulOverAI</div>
+  </div>
+  
+
 </div>

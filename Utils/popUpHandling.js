@@ -1,9 +1,9 @@
 
 let hideTimer;
 
-async function showPopup(container, badge, human) {
+async function showPopup(container, badge, human, data) {
 clearTimeout(hideTimer);
-if (container.querySelector('.ai-popup')) return;
+if (document.body.querySelector('.ai-popup')) return;
 
     
     const HoverUI = chrome.runtime.getURL('Utils/Hover.html');
@@ -20,11 +20,9 @@ if (container.querySelector('.ai-popup')) return;
  popup.style.cssText = `
         position: fixed;
         left: ${rect.left + (rect.width / 2)}px;
-        top: ${rect.top - 100}px;
+        top: ${rect.top - 350}px;
         transform: translateX(-50%);
         width: 300px;
-        background: #ff611d;
-        color: white;
         padding: 15px;
         border-radius: 12px;
         z-index: 2147483647;
@@ -41,6 +39,18 @@ if (container.querySelector('.ai-popup')) return;
         hidePopup();
     });
 
+    
+
+
+
+
+
+
+
+
+
+
+    
     document.body.appendChild(popup);
 
 }

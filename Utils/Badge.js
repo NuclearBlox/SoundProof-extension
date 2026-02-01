@@ -18,7 +18,7 @@ document.head.appendChild(style);
 
 
 
-function ShowWarningBadge(width, selector) {
+function ShowWarningBadge(width, selector, data) {
 
 const Placement = document.querySelector(selector);
 
@@ -57,7 +57,7 @@ badge.style.animation = 'glow-pulse 2s ease-in-out infinite';
 
 container.appendChild(badge);
 container.addEventListener('mouseenter', () => {
-    showPopup(container, badge)
+    showPopup(container, badge, )
 });
 
 container.addEventListener('mouseleave', () => {
@@ -108,7 +108,7 @@ badge.style.opacity = '.75';
 
 container.appendChild(badge);
 container.addEventListener('mouseenter', () => {
-    showPopup(container, badge)
+    showPopup(container, badge, data)
 });
 
 container.addEventListener('mouseleave', () => {
