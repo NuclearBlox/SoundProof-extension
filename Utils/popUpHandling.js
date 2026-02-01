@@ -1,7 +1,7 @@
 
 let hideTimer;
 
-async function showPopup(container, badge, human, data) {
+async function showPopup(container, badge, human) {
 clearTimeout(hideTimer);
 if (document.body.querySelector('.ai-popup')) return;
 
@@ -39,7 +39,7 @@ if (document.body.querySelector('.ai-popup')) return;
         hidePopup();
     });
 
-    
+
 
 
 

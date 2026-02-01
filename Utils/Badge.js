@@ -18,7 +18,7 @@ document.head.appendChild(style);
 
 
 
-function ShowWarningBadge(width, selector, data) {
+function ShowWarningBadge(width, selector) {
 
 const Placement = document.querySelector(selector);
 
@@ -108,7 +108,7 @@ badge.style.opacity = '.75';
 
 container.appendChild(badge);
 container.addEventListener('mouseenter', () => {
-    showPopup(container, badge, data)
+    showPopup(container, badge)
 });
 
 container.addEventListener('mouseleave', () => {

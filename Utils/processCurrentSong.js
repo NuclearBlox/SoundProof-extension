@@ -4,6 +4,7 @@ function DecideBadge(AIwidth, humanWidth, selector, badgeLocation){
     
 chrome.storage.local.get('aiArtist', (result) => {
 
+
     const artistNames = result.aiArtist || [];
     console.log("Loaded", artistNames.length, "AI artists from storage");
 
