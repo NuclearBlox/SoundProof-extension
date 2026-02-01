@@ -6,7 +6,7 @@ clearTimeout(hideTimer);
 if (document.body.querySelector('.ai-popup')) return;
 
     
-    const HoverUI = chrome.runtime.getURL('Utils/Hover.html');
+    const HoverUI = chrome.runtime.getURL('Utils/warning.html');
     
     const response = await fetch(HoverUI);
     const hoverHTML = await response.text();

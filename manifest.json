@@ -4,7 +4,7 @@
   "version": "1.0",
   "permissions": ["storage"],
   "web_accessible_resources": [{
-    "resources": ["Icons/ArtistUsesAI.png", "Icons/LooksHuman.png", "Utils/Hover.html"],
+    "resources": ["Icons/ArtistUsesAI.png", "Icons/LooksHuman.png", "Utils/warning.html"],
     "matches": ["<all_urls>"]
   }],
   "background": {
