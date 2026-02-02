@@ -1,13 +1,10 @@
 # Check [SoulOverAi](https://souloverai.com/list) automatically 
 
-A bare-bones Chrome extension that watches YouTube Music, Apple music, and SoundCloud to tell you whether the song you’re listening to was made by a human or a data center.
+A bare-bones Chrome extension that watches your music streaming platform of choice to tell you whether the song you’re listening to was made by a human or a data center.
 
 It automatically checks the current track against SoulOverAI's list
 
-Support
-Apple Music: Very elaborate, thanks @fudge21!
-YouTube music: Feature complete and integrated into the UI, Polished!
-SoundCloud: Feature complete, not very polished
+## Supports: Spotify, YouTube Music, SoundCloud, Apple Music
 
 Very basic right now, much to be improved!
 
