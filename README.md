@@ -4,6 +4,11 @@ A bare-bones Chrome extension that watches YouTube Music, Apple music, and Sound
 
 It automatically checks the current track against SoulOverAI's list
 
+Support
+Apple Music: Very elaborate, thanks @fudge21!
+YouTube music: Feature complete and integrated into the UI, Polished!
+SoundCloud: Feature complete, not very polished
+
 Very basic right now, much to be improved!
 
 Messy code made by hand!... because having AI make it would go against the whole point wouldnt it?
