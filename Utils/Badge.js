@@ -64,6 +64,7 @@ Placement.parentElement.insertBefore(container, Placement.nextSibling);
 
 console.log("Should be there");
 
+return badge
 
 }
 
@@ -110,6 +111,7 @@ Placement.parentElement.insertBefore(container, Placement.nextSibling);
 
 console.log("Should be there");
 
+return badge
 
 }
 
