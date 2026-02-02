@@ -1,7 +1,7 @@
 <style>
   .ai-popup-content {
     font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.18);
@@ -26,7 +26,7 @@
   /* Status label (AI artist, etc.) */
   .status-label {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: hsl(15, 63%, 58%);
     margin-bottom: 6px;
     margin-left: 5px;
   }
@@ -66,7 +66,7 @@
   }
   
   /* Button styling */
-.popup-button {
+  .popup-button {
     width: 100%;
     padding: 10px;
     margin-bottom: 8px;
@@ -133,6 +133,69 @@
     color: rgba(255, 255, 255, 0.5);
     text-align: right;
     margin-top: 4px;
+  }
+
+  /* Light mode adjustments */
+  @media (prefers-color-scheme: light) {
+    .ai-popup-content {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.18);
+      color: #000000;
+    }
+    
+    .artist-name {
+      color: hsl(15, 73%, 38%);
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+    }
+    
+    .status-label {
+      color: hsl(15, 73%, 38%);
+    }
+    
+    .tag {
+      background: rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      color: #000000;
+    }
+    
+    .description {
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      color: rgba(0, 0, 0, 0.85);
+    }
+    
+    .button-primary {
+      background: rgba(0, 0, 0, 0.9);
+      color: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+    }
+    
+    .button-primary:hover {
+      background: rgba(0, 0, 0, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .button-secondary {
+      background: rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      color: #000000;
+    }
+    
+    .button-secondary:hover {
+      background: rgba(0, 0, 0, 0.12);
+    }
+    
+    .checkbox-container {
+      border-top: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    
+    .checkbox-label {
+      color: rgba(0, 0, 0, 0.85);
+    }
+    
+    .footer-note {
+      color: rgba(0, 0, 0, 0.5);
+    }
   }
 </style>
 
