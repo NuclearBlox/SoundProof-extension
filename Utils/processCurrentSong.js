@@ -28,6 +28,7 @@ chrome.storage.local.get('aiArtist', (result) => {
 
         }else{
             ShowHumanBadge(humanWidth, badgeLocation, artist, padding);
+            console.log('Sent padding: ', padding);
         }
     } else {
         console.log("Artist element not found");

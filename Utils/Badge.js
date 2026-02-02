@@ -83,7 +83,7 @@ RemoveBadges()
   container.style.position = 'relative';
   container.style.display = 'inline-block';
   container.style.margin = `0px ${padding}`;
-
+  console.log("Padding set to", padding);
 
 
 
