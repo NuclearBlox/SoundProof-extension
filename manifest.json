@@ -4,18 +4,25 @@
   "version": "1.0",
   "permissions": ["storage"],
   "web_accessible_resources": [{
-    "resources": ["Icons/ArtistUsesAI.png", "Icons/LooksHuman.png", "Utils/warning.html"],
-    "matches": ["<all_urls>"]
+    "resources": [
+      "Icons/*",
+      "Utils/*"
+    ],
+    "matches": ["https://music.youtube.com/*", "https://music.apple.com/*"]
   }],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [{
     "matches": ["https://music.youtube.com/*"],
-    "js": ["Utils/Badge.js","Utils/popUpHandling.js", "Utils/processCurrentSong.js","Platforms/YtMusic.js"]
+    "js": ["Utils/Badge.js","Utils/popUpHandling.js","Utils/processCurrentSong.js","Platforms/YtMusic.js"]
   },
   {
     "matches": ["https://music.apple.com/*"],
-    "js": ["Utils/Badge.js","Utils/popUpHandling.js", "Utils/processCurrentSong.js","Platforms/appleMusic.js"]
+    "js": ["Utils/Badge.js","Utils/popUpHandling.js","Utils/processCurrentSong.js","Platforms/appleMusic.js"]
+  },
+  {
+    "matches": ["https://soundcloud.com/*"],
+    "js": ["Utils/Badge.js","Utils/popUpHandling.js","Utils/processCurrentSong.js","Platforms/soundcloud.js"]
   }]
 }
