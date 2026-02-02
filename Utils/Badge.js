@@ -18,7 +18,7 @@ document.head.appendChild(style);
 
 
 
-function ShowWarningBadge(width, selector, artist) {
+function ShowWarningBadge(width, selector, artist, padding) {
 
 const Placement = document.querySelector(selector);
 
@@ -33,7 +33,7 @@ RemoveBadges()
   container.className = 'ai-warning-container';
   container.style.position = 'relative';
   container.style.display = 'inline-block';
-  container.style.margin = '0 auto';
+  container.style.margin = `0px ${padding}`;
 
 
 
@@ -68,7 +68,7 @@ return badge
 
 }
 
-function ShowHumanBadge(width, selector, artist) {
+function ShowHumanBadge(width, selector, artist, padding) {
 
 const Placement = document.querySelector(selector);
 
@@ -82,7 +82,7 @@ RemoveBadges()
   container.className = 'human-container';
   container.style.position = 'relative';
   container.style.display = 'inline-block';
-  container.style.margin = '0 auto';
+  container.style.margin = `0px ${padding}`;
 
 
 
