@@ -23,7 +23,7 @@ function DecideBadgeWithPadding(width, height, selector, location, skipBtn, padd
     }
     
 
-    DecideBadge(width, height, selector, '.ai-badge-wrapper', skipBtn);
+    DecideBadge(width, height, selector, '.ai-badge-wrapper', skipBtn, 'auto');
 }
 
 function checkAndUpdateBadge() {
