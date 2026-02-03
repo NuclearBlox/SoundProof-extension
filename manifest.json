@@ -3,6 +3,11 @@
   "name": "Check SoulOverAI",
   "version": "1.0",
   "permissions": ["storage"],
+  "icons": {
+    "16": "Icons/Icon16.png",
+    "48": "Icons/Icon48.png",
+    "128": "Icons/Icon128.png"
+  },
   "web_accessible_resources": [
     {
       "resources": [
