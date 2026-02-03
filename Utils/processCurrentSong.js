@@ -1,42 +1,34 @@
 
 
-function DecideBadge(AIwidth, humanWidth, selector, badgeLocation, skipElement, padding){
-    
-chrome.storage.local.get('aiArtist', (result) => {
+function DecideBadge(AIwidth, humanWidth, selector, badgeLocation, skipElement, padding) {
+    chrome.storage.local.get('aiArtist', (result) => {
+        const artistNames = result.aiArtist || [];
+        console.log("Loaded", artistNames.length, "AI artists from storage");
 
+        const artistElement = document.querySelector(selector)
 
-    const artistNames = result.aiArtist || [];
-    console.log("Loaded", artistNames.length, "AI artists from storage");
-
-    const artistElement = document.querySelector(selector)
-
-
-           if (artistElement) {
+        if (artistElement) {
             let artist = artistElement.textContent.trim();
 
             const isAI = artistNames.includes(artist.toLowerCase());
 
-        console.log("Is AI?", isAI)     
-        if (isAI) {
-             ShowWarningBadge(AIwidth, badgeLocation, artist, padding);
-            chrome.storage.local.get('skipAI', (result) => {
-            var skipAI = result.skipAI || false;
-            if (skipAI === true) {
-                Skip(skipElement);
+            console.log("Is AI?", isAI)
+            if (isAI) {
+                ShowWarningBadge(AIwidth, badgeLocation, artist, padding);
+                chrome.storage.local.get('skipAI', (result) => {
+                    var skipAI = result.skipAI || false;
+                    if (skipAI === true) {
+                        Skip(skipElement);
+                    }
+                });
+            } else {
+                ShowHumanBadge(humanWidth, badgeLocation, artist, padding);
+                console.log('Sent padding: ', padding);
             }
-        });
-
-        }else{
-            ShowHumanBadge(humanWidth, badgeLocation, artist, padding);
-            console.log('Sent padding: ', padding);
+        } else {
+            console.log("Artist element not found");
         }
-    } else {
-        console.log("Artist element not found");
-    }
-
-
-});
-    
+    });
 }
 
 function Skip(skipElement) {
