@@ -16,6 +16,16 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+function attatchPopup(container, badge, human, artist) {
+  container.addEventListener('mouseenter', () => {
+    showPopup(container, badge, human, artist)
+  });
+
+  container.addEventListener('mouseleave', () => {
+    hidePopup()
+  });
+}
+
 function ShowWarningBadge(width, selector, artist, padding) {
   const Placement = document.querySelector(selector);
 
@@ -45,13 +55,7 @@ function ShowWarningBadge(width, selector, artist, padding) {
   badge.style.animation = 'glow-pulse 2s ease-in-out infinite';
 
   container.appendChild(badge);
-  container.addEventListener('mouseenter', () => {
-    showPopup(container, badge, false, artist)
-  });
-
-  container.addEventListener('mouseleave', () => {
-    hidePopup()
-  });
+  attatchPopup(container, badge, false, artist)
 
   Placement.parentElement.insertBefore(container, Placement.nextSibling);
 
