@@ -13,6 +13,9 @@ Very basic right now, much to be improved!
 
 Messy code made by hand!... because having AI make it would go against the whole point wouldnt it?
 
+
+![Thumbnail](Examples/BigSupport.png)
+
 <img src="Examples/ThatsNotReal.png" alt="Thats AI alright" style="width:160px; margin-right:8px;" />
 <img src="Examples/ThatsAbanger.png" alt="That is a banger, alright" style="width:160px; margin-right:8px;" />
 <img src="Examples/Real.png" alt="Popup for real song" style="width:160px; margin-right:8px;" />
