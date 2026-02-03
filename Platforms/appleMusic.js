@@ -113,9 +113,9 @@ chrome.storage.local.get('aiArtist', async (result) => {
 
             console.log("Is AI?", isAI)
             if (isAI) {
-                ShowWarningBadge('75px', '#left-controls > span');
+                ShowWarningBadge('75px', '#left-controls > span', 'auto');
             } else {
-                ShowHumanBadge('50px', '#left-controls > span');
+                ShowHumanBadge('50px', '#left-controls > span', 'auto');
             }
         } else {
             console.log("Artist element not found");
@@ -149,9 +149,9 @@ chrome.storage.local.get('aiArtist', async (result) => {
                 if (isAI) {
                     div.classList.add("AI")
                     img.src = chrome.runtime.getURL('Icons/ArtistUsesAI.png');
-                    ShowWarningBadge("30px", 'a[href^="https://music.apple.com/us/artist/"]', artistName)
+                    ShowWarningBadge("30px", 'a[href^="https://music.apple.com/us/artist/"]', artistName, 'auto')
                 } else {
-                    ShowHumanBadge("30px", 'a[href^="https://music.apple.com/us/artist/"]', artistName)
+                    ShowHumanBadge("30px", 'a[href^="https://music.apple.com/us/artist/"]', artistName, 'auto')
                 }
             }
         } else {

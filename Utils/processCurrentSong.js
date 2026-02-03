@@ -1,6 +1,6 @@
 
 
-function DecideBadge(AIwidth, humanWidth, selector, badgeLocation, skipElement){
+function DecideBadge(AIwidth, humanWidth, selector, badgeLocation, skipElement, padding){
     
 chrome.storage.local.get('aiArtist', (result) => {
 
@@ -18,7 +18,7 @@ chrome.storage.local.get('aiArtist', (result) => {
 
         console.log("Is AI?", isAI)     
         if (isAI) {
-             ShowWarningBadge(AIwidth, badgeLocation, artist);
+             ShowWarningBadge(AIwidth, badgeLocation, artist, padding);
             chrome.storage.local.get('skipAI', (result) => {
             var skipAI = result.skipAI || false;
             if (skipAI === true) {
@@ -27,7 +27,8 @@ chrome.storage.local.get('aiArtist', (result) => {
         });
 
         }else{
-            ShowHumanBadge(humanWidth, badgeLocation, artist);
+            ShowHumanBadge(humanWidth, badgeLocation, artist, padding);
+            console.log('Sent padding: ', padding);
         }
     } else {
         console.log("Artist element not found");
