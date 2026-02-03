@@ -129,31 +129,44 @@ chrome.storage.local.get('aiArtist', async (result) => {
         const page = splitPath[path.split("/").length - 3]
 
         if (page == "album") {
-            const artistElement = await waitForElement('a[href^="https://music.apple.com/us/artist/"]')
-
-            const artistName = artistElement.textContent.trim()
-            const isAI = artistNames.includes(artistName.toLowerCase());
-            console.log("Artist page artist uses AI:", isAI)
-            if (!document.querySelector("#albumPageAI")) {
-                let div = document.createElement("div")
-                div.id = "albumPageAI";
-                div.className = "section svelte-wa5vzl";
-                div.setAttribute("data-testid", "section-container");
-                div.setAttribute("aria-label", "Featured");
-
-                const container = await waitForElement('div[data-testid="content-container"]')
-                container.insertBefore(div, document.querySelector('div[aria-label="Featured"]').nextElementSibling)
-                let img = document.createElement("img")
-                div.appendChild(img)
-
-                if (isAI) {
-                    div.classList.add("AI")
-                    img.src = chrome.runtime.getURL('Icons/ArtistUsesAI.png');
-                    ShowWarningBadge("30px", 'a[href^="https://music.apple.com/us/artist/"]', artistName, 'auto')
-                } else {
-                    ShowHumanBadge("30px", 'a[href^="https://music.apple.com/us/artist/"]', artistName, 'auto')
+            const oneArtistElement = await waitForElement('a[href^="https://music.apple.com/us/artist/"]')
+            const artistElements = document.querySelectorAll('a[href^="https://music.apple.com/us/artist/"]')
+            RemoveBadges()
+            artistElements.forEach(async artistElement => {
+                const artistName = artistElement.textContent.trim()
+                const isAI = artistNames.includes(artistName.toLowerCase());
+                console.log("Artist page artist uses AI:", isAI)
+                if (!document.querySelector("#albumPageAI")) {   
+                    if (isAI) {
+                        if (!document.querySelector("#albumPageAI")) {
+                            let div = document.createElement("div")
+                            div.id = "albumPageAI";
+                            div.className = "section svelte-wa5vzl";
+                            div.setAttribute("data-testid", "section-container");
+                            div.setAttribute("aria-label", "Featured");
+                            let img = document.createElement("img")
+                            img.src = chrome.runtime.getURL('Icons/ArtistUsesAI.png');
+                            div.appendChild(img)
+                            div.classList.add("AI")
+                            const container = await waitForElement('div[data-testid="content-container"]')
+                            container.insertBefore(div, document.querySelector('div[aria-label="Featured"]').nextElementSibling)
+                        }
+                        let size = "30px"
+                        if (artistElement.offsetHeight < 28) {
+                            size = artistElement.offsetHeight +"px"
+                        }
+                        ShowWarningBadge(size, artistElement, artistName, 'auto', false)
+                    } else {
+                        console.log(artistElement.offsetHeight);
+                        
+                        let size = "30px"
+                        if (artistElement.offsetHeight < 28) {
+                            size = artistElement.offsetHeight + "px"
+                        }
+                        ShowHumanBadge(size, artistElement, artistName, 'auto', false)
+                    }
                 }
-            }
+            })
         } else {
             if (document.querySelector("#albumPageAI")) {
                 document.querySelector("#albumPageAI").remove()
