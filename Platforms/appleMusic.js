@@ -106,27 +106,14 @@ chrome.storage.local.get('aiArtist', async (result) => {
     document.head.appendChild(styleElement)
 
     function checkSong() {
-        const artistElement = document.querySelector('.subtitle.ytmusic-player-bar a')
-
-        if (artistElement) {
-            const artist = artistElement.textContent.trim();
-
-            const isAI = artistNames.includes(artist.toLowerCase());
-
-            console.log("Is AI?", isAI)
-            if (isAI) {
-                ShowWarningBadge('75px', '#left-controls > span', 'auto');
-            } else {
-                ShowHumanBadge('50px', '#left-controls > span', 'auto');
-            }
-        } else {
-            console.log("Artist element not found");
-        }
+        
+        console.log("checked song")
+        checkPage()
     }
 
     async function checkPage() {
         const path = location.pathname
-        if (path == lastPath) {
+        if (path == lastPath && document.querySelector(".human-badge") || document.querySelector(".ai-warning-badge")) {
             return
         } else {
             lastPath = path
@@ -134,8 +121,9 @@ chrome.storage.local.get('aiArtist', async (result) => {
         const splitPath = path.split("/")
 
         const page = splitPath[path.split("/").length - 3]
+        const nextPage = splitPath[path.split("/").length - 2]
 
-        if (page == "album") {
+        if (page == "album" || nextPage == "playlist") {
             const oneArtistElement = await waitForElement('a[href^="https://music.apple.com/us/artist/"]')
             const artistElements = document.querySelectorAll('a[href^="https://music.apple.com/us/artist/"]')
             RemoveBadges()
@@ -217,12 +205,10 @@ chrome.storage.local.get('aiArtist', async (result) => {
                 document.querySelector("#artistPageAI").remove()
             }
         }
-
-
-        checkSong()
+        console.log("Checked Page")
     }
     // setInterval(checkSong, 1000);
-    setInterval(checkPage, 1000);
+    setInterval(checkSong, 1000);
     // checkPage()
 
     var oldHref = document.location.href;
