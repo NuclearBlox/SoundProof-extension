@@ -26,15 +26,22 @@ function attatchPopup(container, badge, human, artist) {
   });
 }
 
-function ShowWarningBadge(width, selector, artist, padding) {
-  const Placement = document.querySelector(selector);
+function ShowWarningBadge(width, selector, artist, padding, removePrev = true) {
+  let Placement;
+  if (typeof (selector) == "string") {
+    Placement = document.querySelector(selector);
+  } else {
+    Placement = selector
+  }
 
   if (!Placement) {
     console.log("Screwed up");
     return;
   }
   const alreadyThere = document.querySelector('.ai-warning-container')
-  RemoveBadges()
+  if (removePrev) {
+    RemoveBadges()
+  }
 
   const container = document.createElement('div');
   container.className = 'ai-warning-container';
@@ -64,14 +71,21 @@ function ShowWarningBadge(width, selector, artist, padding) {
   return badge
 }
 
-function ShowHumanBadge(width, selector, artist, padding) {
-  const Placement = document.querySelector(selector);
+function ShowHumanBadge(width, selector, artist, padding, removePrev = true) {
+  let Placement;
+  if (typeof (selector) == "string") {
+    Placement = document.querySelector(selector);
+  } else {
+    Placement = selector
+  }
 
   if (!Placement) {
     console.log("Screwed up");
     return;
   }
-  RemoveBadges()
+  if (removePrev) {
+    RemoveBadges()
+  }
 
   const container = document.createElement('div');
   container.className = 'human-container';
