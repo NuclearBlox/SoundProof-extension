@@ -107,22 +107,19 @@ function ShowHumanBadge(width, selector, artist, padding) {
 }
 
 function RemoveBadges() {
-  const Aibadge = document.querySelector('.ai-warning-container');
-  const Humanbadge = document.querySelector('.human-container');
-  const popup = document.querySelector('.ai-popup');
+  const Aibadges = document.querySelectorAll('.ai-warning-container');
+  const Humanbadges = document.querySelectorAll('.human-container');
+  const popups = document.querySelectorAll('.ai-popup');
 
-  if (Aibadge) {
+  Aibadges.forEach(Aibadge => {
     Aibadge.remove();
-    console.log("AI Badge removed");
-  }
+  })
 
-  if (Humanbadge) {
+  Humanbadges.forEach(Humanbadge => {
     Humanbadge.remove();
-    console.log("Human Badge removed");
-  }
+  })
 
-  if (popup) {
+  popups.forEach(popup => {
     popup.remove();
-    console.log("Popup removed");
-  }
+  })
 }
