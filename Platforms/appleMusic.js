@@ -95,6 +95,8 @@ const appleStyle = `
 }
 `
 
+let lastPath = ""
+
 chrome.storage.local.get('aiArtist', async (result) => {
     const artistNames = result.aiArtist || [];
     console.log("Loaded", artistNames.length, "AI artists from storage");
@@ -124,6 +126,11 @@ chrome.storage.local.get('aiArtist', async (result) => {
 
     async function checkPage() {
         const path = location.pathname
+        if (path == lastPath) {
+            return
+        } else {
+            lastPath = path
+        }
         const splitPath = path.split("/")
 
         const page = splitPath[path.split("/").length - 3]
