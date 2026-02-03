@@ -15,3 +15,5 @@ Messy code made by hand!... because having AI make it would go against the whole
 
 ![YouTubeExmp](Examples/ThatsNotReal.png)
 ![YouTubeExmp](Examples/ThatsAbanger.png)
+![AiPopup](Examples/AiPopup.png)
+![HumanPopup](Examples/BangerPopup.png)
