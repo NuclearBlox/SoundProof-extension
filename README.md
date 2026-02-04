@@ -1,5 +1,6 @@
 # Check [SoulOverAi](https://souloverai.com/list) automatically 
 
+## Dont want to worry about staying up to date? [Get it on the Chrome store!](https://chromewebstore.google.com/detail/detect-skip-ai-music-soul/mbfhdilbcdcnhbaakndiofeahchaclpa?authuser=0&hl=en)
 A bare-bones Chrome extension that watches your music streaming platform of choice to tell you whether the song you’re listening to was made by a human or a data center.
 
 It automatically checks the current track against SoulOverAI's list
