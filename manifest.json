@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Check SoulOverAI",
+  "name": "Detect & Skip AI Music - SoulOverAI integration",
   "version": "1.0",
   "permissions": ["storage"],
   "icons": {
