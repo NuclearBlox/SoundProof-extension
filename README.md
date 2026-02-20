@@ -5,7 +5,7 @@
 
 
 ## ℹ️ Feature complete!
-not getting many updates if you think its missing something contribute!
+not getting many updates if you want to contribute read the [Wiki!](https://github.com/NuclearBlox/Check-SoulOverAI-extension/wiki)
 
 A Chrome extension that watches your music streaming platform of choice to tell you whether the song you’re listening to was made by a human or a data center.
 
