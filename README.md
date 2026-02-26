@@ -16,7 +16,7 @@ It automatically checks the current track against SoulOverAI's list
 Very basic right now, much to be improved!
 
 Messy code made by hand!... because having AI make it would go against the whole point wouldnt it?
-
+(thanks to [Fudge21](https://github.com/fudge21) for Apple music support!
 
 ![Thumbnail](Examples/BigSupport.png)
 
