@@ -41,9 +41,9 @@ async function showPopup(container, badge, human, artist) {
         padding: 15px;
         border-radius: 12px;
         z-index: 2147483647;
-        
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         pointer-events: auto; 
+
+        
     `;
 
         popup.addEventListener('mouseenter', () => {
