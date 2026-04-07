@@ -1,17 +1,16 @@
 # Check [SoulOverAi](https://souloverai.com/list) automatically 
 
-## Dont want to worry about staying up to date? [Get it on the Chrome store!](https://chromewebstore.google.com/detail/detect-skip-ai-music-soul/mbfhdilbcdcnhbaakndiofeahchaclpa?authuser=0&hl=en)
+## Don't want to worry about staying up to date? [Get it on the Chrome store!](https://chromewebstore.google.com/detail/detect-skip-ai-music-soul/mbfhdilbcdcnhbaakndiofeahchaclpa?authuser=0&hl=en)
 (I would greatly appreciate the ego boost of getting a download on the web store, too!)
 
+> [!IMPORTANT] 
+> SoulOver AI is being abandoned. The extension still works. The datasource is no longer being updated. I am working on finding a new datasource and creating a block list. The extension most likely will undergo some changes; a user shouldn't notice them, but I can't promise anything. You may notice a rebrand, though!
 
 ## ~ℹ️ Feature complete!~
 ~not getting many updates~ if you want to contribute, read the [Wiki!](https://github.com/NuclearBlox/Check-SoulOverAI-extension/wiki)
 
 > [!note]
-> The previous statment is no longer true! currently I have planned
-> 1: Custom block list incase SoulOverAI doesnt have it or you dont like the artist/term
-> 2: General UI improvement
-> 3: *Potentially* Skip stats privacy remains the same i may log how many times AI is properly detected to keep an eye on the extension depending on how privately i can do it. definitely will make opt in if i do it
+> The previous statement is no longer true! I have many more features planned, but they will be on the back burner as I get AI detection under control
 
 A Chrome extension that watches your music streaming platform of choice to tell you whether the song you’re listening to was made by a human or a data center.
 
