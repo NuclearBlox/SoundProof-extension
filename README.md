@@ -4,8 +4,7 @@
 (I would greatly appreciate the ego boost of getting a download on the web store, too!)
 
 > [!important]
-> current plans are now to set up a voting
-> system so that you can upvote or download > a track as AI stay on the lookout for this! 
+> New dataset is under way! with SoulOverAI being sunset this extension will be moving to a custom dataset made specifically for this extension. Using votes to mark AI instead of relying on one overworked persons dataset. see you soon!
 
 
 > [!note]
