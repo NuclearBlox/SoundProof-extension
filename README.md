@@ -3,7 +3,12 @@
 ## Don't want to worry about staying up to date? [Get it on the Chrome store!](https://chromewebstore.google.com/detail/detect-skip-ai-music-soul/mbfhdilbcdcnhbaakndiofeahchaclpa?authuser=0&hl=en)
 (I would greatly appreciate the ego boost of getting a download on the web store, too!)
 
-> [!IMPORTANT] 
+> [!important]
+> current plans are now to set up a voting
+> system so that you can upvote or download > a track as AI stay on the lookout for this! 
+
+
+> [!note]
 > SoulOver AI is being abandoned. The extension still works. The datasource is no longer being updated. I am working on finding a new datasource and creating a block list. The extension most likely will undergo some changes; a user shouldn't notice them, but I can't promise anything. You may notice a rebrand, though!
 
 ## ~ℹ️ Feature complete!~
