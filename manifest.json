@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Detect & Skip AI Music - SoundProof integration",
+  "name": "Detect & Skip AI Music - SoundProof",
   "version": "4.0.0",
   "permissions": ["storage"],
   "host_permissions": ["https://solsneywdlhvwbtghopw.supabase.co/*"],
@@ -14,7 +14,8 @@
       "matches": [
         "https://music.youtube.com/*",
         "https://music.apple.com/*",
-        "https://soundcloud.com/*"
+        "https://soundcloud.com/*",
+        "https://open.spotify.com/*"
       ],
       "js": [
         "libs/supabase.js",
@@ -30,13 +31,15 @@
     {
       "resources": [
         "Icons/*.png",
+        "Badges/*.png",
         "Utils/*.js",
         "warning.html"
       ],
       "matches": [
         "https://music.youtube.com/*",
         "https://music.apple.com/*",
-        "https://soundcloud.com/*"
+        "https://soundcloud.com/*",
+        "https://open.spotify.com/*"
       ]
     }
   ]
