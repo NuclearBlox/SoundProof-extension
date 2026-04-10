@@ -9,9 +9,15 @@
 
     const DEFAULT_STATUS = { out_human: 0, out_ai: 0, out_score: 0, out_verified: false, my_current_vote: null };
 
-    const VERIFIED_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="var(--human)" style="flex-shrink:0;margin-left:4px">
-        <path d="M12 1l2.9 3.4L19 3l.7 4.1L24 9l-2 3.9 2 3.9-4.3 1.9L19 23l-4.1-1.4L12 24l-2.9-2.6L5 23l-.7-4.1L0 16.8l2-3.9L0 9l4.3-1.9L5 3l4.1 1.4z"/>
-        <polyline points="7,12.5 10.5,16 17,9" stroke="#052e16" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    const VERIFIED_ICON = `
+        <span class="tooltip-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 -960 960 960" fill="#22c55e" style="flex-shrink:0;display:block">
+                <path d="m344-60-76-128-144-32 14-148-98-112 98-112-14-148 144-32 76-128 136 58 136-58 76 128 144 32-14 148 98 112-98 112 14 148-144 32-76 128-136-58-136 58Zm94-278 226-226-56-58-170 170-86-84-56 58 142 140Z"/>
+            </svg>
+            <span class="tooltip">A human moderator has reviewed this artist and confirmed the rating — either through a high vote count or a resolved appeal.</span>
+        </span>`;
+    const LOCK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960" fill="#71717a" style="flex-shrink:0">
+        <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm240-200q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80Z"/>
     </svg>`;
 
     function getVerdictColor(label, pct) {
@@ -46,7 +52,7 @@
 
         const style = document.createElement('style');
         style.textContent = `
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=JetBrains+Mono:wght@500&family=Saira+Extra+Condensed:wght@700;800&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=JetBrains+Mono:wght@500&family=Saira+Extra+Condensed:wght@700;800&family=Bebas+Neue&display=swap');
 
             :host { 
                 all: initial; 
@@ -60,11 +66,14 @@
             }
 
             .card {
-                width: 360px; padding: 18px; background: var(--bg);
+                width: 360px; padding: 18px;
+                background: rgba(12, 12, 14, 0.82);
+                backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
                 border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
                 color: var(--text); font-family: 'Inter', sans-serif;
-                box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+                box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
                 animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+                position: relative; overflow: hidden;
             }
 
             @keyframes pop { 
@@ -72,20 +81,34 @@
                 to   { opacity: 1; transform: translateY(0) scale(1); } 
             }
 
+            /* Glow anchored to top-right corner, clipped by card overflow:hidden */
+            .glow-orb {
+                position: absolute; top: -60px; right: -60px;
+                width: 220px; height: 220px; border-radius: 50%;
+                filter: blur(55px); opacity: 0.45; z-index: 0;
+                transition: background 0.6s ease;
+                pointer-events: none;
+            }
+            /* Everything sits above the glow */
+            .top, .meter-bar, .stats, .btns, .footer { position: relative; z-index: 1; }
+
             .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 12px; }
             .name-box { flex: 1; min-width: 0; }
-            .name { font-size: 20px; font-weight: 800; line-height: 1.1; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; overflow-wrap: break-word; }
+            .name { font-size: 20px; font-weight: 800; line-height: 1.1; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; overflow-wrap: break-word; align-self: flex-start; }
             .sub { font-size: 10px; color: #a1a1aa; text-decoration: none; font-weight: 600; display: block; }
             .sub:hover { color: var(--text); text-decoration: underline; }
 
-            .verdict { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; }
-            .pct { font-family: 'Saira Extra Condensed', sans-serif; font-size: clamp(32px, 5vw, 48px); font-weight: 800; line-height: 0.8; }
-            .tag { font-family: 'Saira Extra Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.05em; margin-top: 8px; }
+            .verdict { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; position: relative; }
+            .pct { font-family: 'Bebas Neue', sans-serif; font-size: 56px; font-weight: 400; line-height: 0.85; letter-spacing: 0.01em; position: relative; z-index: 1; }
+            .tag { font-family: 'Saira Extra Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.05em; margin-top: 6px; position: relative; z-index: 1; }
 
             .meter-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 100px; overflow: hidden; display: flex; margin-bottom: 5px; }
             .fill { transition: width 0.8s cubic-bezier(0.2, 0, 0, 1); }
 
-            .stats { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 9px; margin-bottom: 15px; }
+            .stats { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 2px; }
+            .stat-val { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: -0.02em; }
+            .stat-val .plus { font-size: 10px; font-weight: 500; margin-right: 1px; opacity: 0.8; }
+            .stat-label { font-size: 9px; font-weight: 500; opacity: 0.5; margin-left: 3px; letter-spacing: 0.04em; text-transform: lowercase; font-family: 'Inter', sans-serif; }
 
             .btns { display: flex; gap: 8px; margin-bottom: 15px; height: 42px; }
             .btn {
@@ -105,13 +128,33 @@
             .btns .btn:hover { flex: 1.8; }
 
             .btn-locked {
-                flex: 1; background: transparent; color: var(--dim);
-                border: 1.5px dashed rgba(255,255,255,0.1); cursor: default;
-                font-size: 11px; font-weight: 500; border-radius: 9px;
+                flex: 1; background: rgba(255,255,255,0.06); color: var(--text);
+                border: 1.5px solid rgba(255,255,255,0.15); cursor: default;
+                font-size: 12px; font-weight: 700; border-radius: 9px;
                 display: flex; align-items: center; justify-content: center;
+                letter-spacing: 0.02em;
             }
 
-            /* Skeleton loading */
+            .tooltip-wrap { position: relative; display: flex; align-items: center; cursor: default; }
+            .tooltip {
+                display: none;
+                position: absolute;
+                bottom: calc(100% + 8px);
+                left: 50%;
+                transform: translateX(-50%);
+                background: #1c1c1f;
+                border: 1px solid rgba(255,255,255,0.12);
+                color: #d4d4d8;
+                font-size: 11px;
+                font-weight: 400;
+                line-height: 1.5;
+                padding: 8px 10px;
+                border-radius: 8px;
+                width: 200px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+                pointer-events: none;
+                z-index: 10;
+            }
             .skeleton { animation: pulse 1.2s ease-in-out infinite; background: rgba(255,255,255,0.06); border-radius: 4px; }
             @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
@@ -132,19 +175,20 @@
             .ai-label { color: var(--dim); font-weight: 700; text-transform: uppercase; font-size: 9px; letter-spacing: 0.05em; }
 
             .appeal {
-                font-size: 10px; color: var(--dim); cursor: pointer; text-decoration: none;
-                background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 100px;
+                font-size: 11px; font-weight: 600; color: #a1a1aa; cursor: pointer; text-decoration: none;
+                background: rgba(255,255,255,0.08); padding: 5px 12px; border-radius: 100px;
                 display: flex; align-items: center; overflow: hidden; white-space: nowrap;
                 max-width: 65px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
             }
-            .appeal:hover { max-width: 180px; background: rgba(255,255,255,0.1); color: var(--text); }
+            .appeal:hover { max-width: 180px; background: rgba(255,255,255,0.15); color: var(--text); }
             .full { opacity: 0; width: 0; transition: 0.3s; margin-left: 0; }
-            .appeal:hover .full { opacity: 0.8; width: auto; margin-left: 4px; }
+            .appeal:hover .full { opacity: 1; width: auto; margin-left: 4px; }
         `;
 
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
+            <div class="glow-orb" id="glow"></div>
             <div class="top">
                 <div class="name-box">
                     <div class="name">${artist}</div>
@@ -157,8 +201,8 @@
             </div>
             <div class="meter-bar"><div class="fill skeleton" style="width:100%"></div></div>
             <div class="stats">
-                <span style="color:#3f3f46">+0 human</span>
-                <span style="color:#3f3f46">+0 AI</span>
+                <span class="stat-val" style="color:#3f3f46"><span class="plus">+</span>0<span class="stat-label">human</span></span>
+                <span class="stat-val" style="color:#3f3f46"><span class="plus">+</span>0<span class="stat-label">AI</span></span>
             </div>
             <div class="btns">
                 <button class="btn btn-h" disabled>Human</button>
@@ -210,33 +254,30 @@
 
         const themeColor = getVerdictColor(label, displayPct);
 
-        // Patch name + verified badge
-        shadow.querySelector('.name').innerHTML = 
-            artist + (status.out_verified ? VERIFIED_SVG : '');
+        // Badge AFTER the name
+        shadow.querySelector('.name').innerHTML =
+            `<span>${artist}</span>` + (status.out_verified ? VERIFIED_ICON : '');
 
-        // Patch verdict
+        shadow.querySelector('#glow').style.background = themeColor;
         shadow.querySelector('.pct').style.color = themeColor;
         shadow.querySelector('.pct').textContent = isEmpty ? '—%' : `${displayPct}%`;
         shadow.querySelector('.tag').style.color = themeColor;
         shadow.querySelector('.tag').textContent = label;
 
-        // Patch meter
         shadow.querySelector('.meter-bar').innerHTML = isEmpty
             ? '<div class="fill" style="width:100%;background:#3f3f46"></div>'
             : `<div class="fill" style="width:${hPct}%;background:var(--human)"></div>
                <div class="fill" style="width:${aPct}%;background:var(--ai)"></div>`;
 
-        // Patch stats
-        const [humanStat, aiStat] = shadow.querySelectorAll('.stats span');
+        const [humanStat, aiStat] = shadow.querySelectorAll('.stat-val');
         humanStat.style.color = isEmpty ? '#3f3f46' : 'var(--human)';
-        humanStat.textContent = `+${status.out_human} human`;
+        humanStat.innerHTML = `<span class="plus">+</span>${status.out_human}<span class="stat-label">human</span>`;
         aiStat.style.color = isEmpty ? '#3f3f46' : 'var(--ai)';
-        aiStat.textContent = `+${status.out_ai} AI`;
+        aiStat.innerHTML = `<span class="plus">+</span>${status.out_ai}<span class="stat-label">AI</span>`;
 
-        // Patch buttons — handle locked state
         const btns = shadow.querySelector('.btns');
         if (status.out_verified) {
-            btns.innerHTML = `<button class="btn btn-locked">Locked · Moderated result.</button>`;
+            btns.innerHTML = `<button class="btn btn-locked">${LOCK_ICON} Voting locked · Moderated result</button>`;
         } else {
             const [vH, vA] = btns.querySelectorAll('.btn');
             vH.removeAttribute('disabled');
@@ -248,7 +289,7 @@
         }
 
         shadow.querySelector('#skip-in').value = threshold;
-        shadow.querySelector('#skip-in').onchange = (e) => 
+        shadow.querySelector('#skip-in').onchange = (e) =>
             chrome.storage.local.set({ threshold: e.target.value });
     };
 
