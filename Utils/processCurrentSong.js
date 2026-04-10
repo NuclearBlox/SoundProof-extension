@@ -1,37 +1,28 @@
+(() => {
+    
+    
+    window.DecideBadge = async function(AIwidth, humanWidth, selector, badgeLocation, skipElement, padding) {
+        const artistElement = document.querySelector(selector);
+        if (!artistElement) return;
 
+        let artistName = artistElement.textContent.trim();
 
-function DecideBadge(AIwidth, humanWidth, selector, badgeLocation, skipElement, padding) {
-    chrome.storage.local.get('aiArtist', (result) => {
-        const artistNames = result.aiArtist || [];
-        console.log("Loaded", artistNames.length, "AI artists from storage");
+        try {
+            const { data, error } = await window.supabaseClient.rpc('get_artist_status', { 
+                target_id: artistName 
+            });
 
-        const artistElement = document.querySelector(selector)
+            const status = (data && data[0]) ? data[0] : { out_score: 0, out_verified: false };
+            const isAI = status.out_verified || status.out_score > 0;
 
-        if (artistElement) {
-            let artist = artistElement.textContent.trim();
-
-            const isAI = artistNames.includes(artist.toLowerCase());
-
-            console.log("Is AI?", isAI)
             if (isAI) {
-                ShowWarningBadge(AIwidth, badgeLocation, artist, padding);
-                chrome.storage.local.get('skipAI', (result) => {
-                    var skipAI = result.skipAI || false;
-                    if (skipAI === true) {
-                        Skip(skipElement);
-                    }
-                });
+                ShowWarningBadge(AIwidth, badgeLocation, artistName, padding);
             } else {
-                ShowHumanBadge(humanWidth, badgeLocation, artist, padding);
-                console.log('Sent padding: ', padding);
+                ShowHumanBadge(humanWidth, badgeLocation, artistName, padding);
             }
-        } else {
-            console.log("Artist element not found");
+        } catch (err) {
+            console.error("Supabase Error:", err);
+            ShowHumanBadge(humanWidth, badgeLocation, artistName, padding);
         }
-    });
-}
-
-function Skip(skipElement) {
-    skipElement.click();
-    console.log("Skipped song");
-}
+    };
+})();

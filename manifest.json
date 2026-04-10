@@ -1,64 +1,42 @@
 {
   "manifest_version": 3,
   "name": "Detect & Skip AI Music - SoulOverAI integration",
-  "version": "3.0.2",
+  "version": "4.0.0",
   "permissions": ["storage"],
+  "host_permissions": ["https://solsneywdlhvwbtghopw.supabase.co/*"],
   "icons": {
     "16": "Icons/Icon16.png",
     "48": "Icons/Icon48.png",
     "128": "Icons/Icon128.png"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://music.youtube.com/*",
+        "https://music.apple.com/*",
+        "https://soundcloud.com/*"
+      ],
+      "js": [
+        "libs/supabase.js",
+        "Utils/popUpHandling.js",
+        "Utils/Badge.js",
+        "Utils/processCurrentSong.js",
+        "Platforms/YtMusic.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
   "web_accessible_resources": [
     {
       "resources": [
-        "Icons/*",
-        "Utils/*"
+        "Icons/*.png",
+        "Utils/*.js",
+        "warning.html"
       ],
       "matches": [
         "https://music.youtube.com/*",
         "https://music.apple.com/*",
-        "https://open.spotify.com/*"
-      ]
-    }
-  ],
-  "background": {
-    "service_worker": "background.js"
-  },
-  "content_scripts": [
-    {
-      "matches": ["https://music.youtube.com/*"],
-      "js": [
-        "Utils/Badge.js",
-        "Utils/popUpHandling.js",
-        "Utils/processCurrentSong.js",
-        "Platforms/YtMusic.js"
-      ]
-    },
-    {
-      "matches": ["https://music.apple.com/*"],
-      "js": [
-        "Utils/Badge.js",
-        "Utils/popUpHandling.js",
-        "Utils/processCurrentSong.js",
-        "Platforms/appleMusic.js"
-      ]
-    },
-    {
-      "matches": ["https://soundcloud.com/*"],
-      "js": [
-        "Utils/Badge.js",
-        "Utils/popUpHandling.js",
-        "Utils/processCurrentSong.js",
-        "Platforms/soundcloud.js"
-      ]
-    },
-    {
-      "matches": ["https://open.spotify.com/*"],
-      "js": [
-        "Utils/Badge.js",
-        "Utils/popUpHandling.js",
-        "Utils/processCurrentSong.js",
-        "Platforms/spotify.js"
+        "https://soundcloud.com/*"
       ]
     }
   ]
