@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Detect & Skip AI Music - SoulOverAI integration",
+  "name": "Detect & Skip AI Music - SoundProof integration",
   "version": "4.0.0",
   "permissions": ["storage"],
   "host_permissions": ["https://solsneywdlhvwbtghopw.supabase.co/*"],
