@@ -4,7 +4,7 @@
 (I would greatly appreciate the ego boost of getting a download on the web store, too!)
 
 > [!important]
-> New dataset is under way! with SoulOverAI being sunset this extension will be moving to a custom dataset made specifically for this extension. Using votes to mark AI instead of relying on one overworked persons dataset. see you soon!
+> New dataset is done i just need to link it to the client in a nice way! The extension will be moving to a custom dataset made specifically for this extension. Using votes to mark AI instead of relying on one overworked persons dataset. see you soon!
 
 
 > [!note]
