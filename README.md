@@ -24,6 +24,3 @@ Very basic right now, much to be improved!
 Messy code made by hand!... because having AI make it would go against the whole point, wouldn't it?
 (thanks to [Fudge21](https://github.com/fudge21) for Apple music support!)
 
-![YouTubeExmp](Examples/ThatsAbanger.png)
-![AiPopup](Examples/AiPopup.png)
-![HumanPopup](Examples/BangerPopup.png)
