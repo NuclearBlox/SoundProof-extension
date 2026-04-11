@@ -1,5 +1,5 @@
 
-
+// The new badges are Badges/AI.png Badges/AIVerified.png Badges/Human.png Badges/HumanVerified.png Badges/leanAI.png Badges/leanHuman.png and Badges/NoData.png
 const style = document.createElement('style');
 style.textContent = `
   @keyframes glow-pulse {
@@ -51,7 +51,7 @@ function ShowWarningBadge(width, selector, artist, padding, removePrev = true) {
 
   const badge = document.createElement('img');
   badge.className = 'ai-warning-badge';
-  badge.src = chrome.runtime.getURL('Icons/ArtistUsesAI.png');
+  badge.src = chrome.runtime.getURL('Badges/AI.png');
 
   badge.style.width = width;
   badge.style.display = 'block';
@@ -96,7 +96,7 @@ function ShowHumanBadge(width, selector, artist, padding, removePrev = true) {
 
   const badge = document.createElement('img');
   badge.className = 'human-badge';
-  badge.src = chrome.runtime.getURL('Icons/LooksHuman.png');
+  badge.src = chrome.runtime.getURL('Badges/Human.png');
 
   badge.style.width = width;
   badge.style.display = 'block';
