@@ -19,8 +19,8 @@
       ],
       "js": [
         "libs/supabase.js",
-        "Utils/popUpHandling.js",
         "Utils/Badge.js",
+        "Utils/popUpHandling.js",
         "Utils/processCurrentSong.js",
         "Platforms/YtMusic.js"
       ],

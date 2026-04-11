@@ -1,139 +1,92 @@
-
-// The new badges are Badges/AI.png Badges/AIVerified.png Badges/Human.png Badges/HumanVerified.png Badges/leanAI.png Badges/leanHuman.png and Badges/NoData.png
 const style = document.createElement('style');
 style.textContent = `
   @keyframes glow-pulse {
-    0% {
-      filter: sepia(1) hue-rotate(-50deg) saturate(5) brightness(1) drop-shadow(0 0 15px rgba(255, 0, 0, 0.8)) drop-shadow(0 0 30px rgba(255, 0, 0, 0.5));
-    }
-    50% {
-      filter: sepia(1) hue-rotate(-50deg) saturate(7) brightness(1.3) drop-shadow(0 0 25px rgba(255, 0, 0, 1)) drop-shadow(0 0 50px rgba(255, 0, 0, 0.8));
-    }
-    100% {
-      filter: sepia(1) hue-rotate(-50deg) saturate(5) brightness(1) drop-shadow(0 0 15px rgba(255, 0, 0, 0.8)) drop-shadow(0 0 30px rgba(255, 0, 0, 0.5));
-    }
+    0%   { filter: sepia(1) hue-rotate(-50deg) saturate(5) brightness(1)   drop-shadow(0 0 15px rgba(255,0,0,0.8)) drop-shadow(0 0 30px rgba(255,0,0,0.5)); }
+    50%  { filter: sepia(1) hue-rotate(-50deg) saturate(7) brightness(1.3) drop-shadow(0 0 25px rgba(255,0,0,1))   drop-shadow(0 0 50px rgba(255,0,0,0.8)); }
+    100% { filter: sepia(1) hue-rotate(-50deg) saturate(5) brightness(1)   drop-shadow(0 0 15px rgba(255,0,0,0.8)) drop-shadow(0 0 30px rgba(255,0,0,0.5)); }
   }
 `;
 document.head.appendChild(style);
 
-function attatchPopup(container, badge, human, artist) {
-  container.addEventListener('mouseenter', () => {
-    showPopup(container, badge, human, artist)
-  });
-
-  container.addEventListener('mouseleave', () => {
-    hidePopup()
-  });
+function getPlacement(selector) {
+    if (typeof selector === 'string') return document.querySelector(selector);
+    return selector;
 }
 
-function ShowWarningBadge(width, selector, artist, padding, removePrev = true) {
-  let Placement;
-  if (typeof (selector) == "string") {
-    Placement = document.querySelector(selector);
-  } else {
-    Placement = selector
-  }
-
-  if (!Placement) {
-    console.log("Screwed up");
-    return;
-  }
-  const alreadyThere = document.querySelector('.ai-warning-container')
-  if (removePrev) {
-    RemoveBadges()
-  }
-
-  const container = document.createElement('div');
-  container.className = 'ai-warning-container';
-  container.style.position = 'relative';
-  container.style.display = 'inline-block';
-  container.style.margin = `0px ${padding}`;
-
-  const badge = document.createElement('img');
-  badge.className = 'ai-warning-badge';
-  badge.src = chrome.runtime.getURL('Badges/AI.png');
-
-  badge.style.width = width;
-  badge.style.display = 'block';
-  badge.style.margin = '0 auto';
-  badge.style.zIndex = '9999';
-
-  badge.style.filter = 'sepia(1) hue-rotate(-50deg) saturate(5) brightness(1) drop-shadow(0 0 15px rgba(255, 0, 0, 0.8)) drop-shadow(0 0 30px rgba(255, 0, 0, 0.5))';
-  badge.style.animation = 'glow-pulse 2s ease-in-out infinite';
-
-  container.appendChild(badge);
-  attatchPopup(container, badge, false, artist)
-
-  Placement.parentElement.insertBefore(container, Placement.nextSibling);
-
-  console.log("Should be there");
-
-  return badge
+function makeContainer(className, padding, width) {
+    const container = document.createElement('div');
+    container.className = className;
+    container.style.cssText = `position:relative;display:inline-block;margin:0px ${padding};width:${width};cursor:pointer`;
+    return container;
 }
 
-function ShowHumanBadge(width, selector, artist, padding, removePrev = true) {
-  let Placement;
-  if (typeof (selector) == "string") {
-    Placement = document.querySelector(selector);
-  } else {
-    Placement = selector
-  }
+function makeBadge(src, width) {
+    const badge = document.createElement('img');
+    badge.src = chrome.runtime.getURL(src);
+    badge.style.cssText = `width:${width};height:auto;display:block;z-index:9999`;
+    return badge;
+}
 
-  if (!Placement) {
-    console.log("Screwed up");
-    return;
-  }
-  if (removePrev) {
-    RemoveBadges()
-  }
+function attachPopup(container, badge, human, artist) {
+    container.addEventListener('mouseenter', () => showPopup(container, badge, human, artist));
+    container.addEventListener('mouseleave', () => hidePopup());
+}
 
-  const container = document.createElement('div');
-  container.className = 'human-container';
-  container.style.position = 'relative';
-  container.style.display = 'inline-block';
-  container.style.margin = `0px ${padding}`;
-  console.log("Padding set to", padding);
+function insertBadge(container, placement) {
+    placement.parentElement.insertBefore(container, placement.nextSibling);
+}
 
-  const badge = document.createElement('img');
-  badge.className = 'human-badge';
-  badge.src = chrome.runtime.getURL('Badges/Human.png');
+function ShowWarningBadge(width, selector, artist, padding, removePrev = true, isLean = false, isVerified = false) {
+    const placement = getPlacement(selector);
+    if (!placement) return;
+    if (removePrev) RemoveBadges();
 
-  badge.style.width = width;
-  badge.style.display = 'block';
-  badge.style.margin = '0 auto';
-  badge.style.zIndex = '9999';
-  badge.style.opacity = '.75';
+    const container = makeContainer('ai-warning-container', padding, width);
+    const src = isVerified ? 'Badges/AIVerified.png' : isLean ? 'Badges/leanAI.png' : 'Badges/AI.png';
+    const badge = makeBadge(src, width);
 
-  container.appendChild(badge);
-  container.addEventListener('mouseenter', () => {
-    showPopup(container, badge, true, artist)
-  });
+    if (!isLean && !isVerified) {
+        badge.style.filter = 'sepia(1) hue-rotate(-50deg) saturate(5) brightness(1) drop-shadow(0 0 15px rgba(255,0,0,0.8)) drop-shadow(0 0 30px rgba(255,0,0,0.5))';
+        badge.style.animation = 'glow-pulse 2s ease-in-out infinite';
+    }
 
-  container.addEventListener('mouseleave', () => {
-    hidePopup()
-  });
+    container.appendChild(badge);
+    attachPopup(container, badge, false, artist);
+    insertBadge(container, placement);
+    return badge;
+}
 
-  Placement.parentElement.insertBefore(container, Placement.nextSibling);
+function ShowHumanBadge(width, selector, artist, padding, removePrev = true, isLean = false, isVerified = false) {
+    const placement = getPlacement(selector);
+    if (!placement) return;
+    if (removePrev) RemoveBadges();
 
-  console.log("Should be there");
+    const container = makeContainer('human-container', padding, width);
+    const src = isVerified ? 'Badges/HumanVerified.png' : isLean ? 'Badges/leanHuman.png' : 'Badges/Human.png';
+    const badge = makeBadge(src, width);
+    badge.style.opacity = '0.75';
 
-  return badge
+    container.appendChild(badge);
+    attachPopup(container, badge, true, artist);
+    insertBadge(container, placement);
+    return badge;
+}
+
+function ShowNoDataBadge(width, selector, artist, padding, removePrev = true) {
+    const placement = getPlacement(selector);
+    if (!placement) return;
+    if (removePrev) RemoveBadges();
+
+    const container = makeContainer('human-container', padding, width);
+    const badge = makeBadge('Badges/NoData.png', width);
+    badge.style.opacity = '0.5';
+
+    container.appendChild(badge);
+    attachPopup(container, badge, true, artist);
+    insertBadge(container, placement);
+    return badge;
 }
 
 function RemoveBadges() {
-  const Aibadges = document.querySelectorAll('.ai-warning-container');
-  const Humanbadges = document.querySelectorAll('.human-container');
-  const popups = document.querySelectorAll('.ai-popup');
-
-  Aibadges.forEach(Aibadge => {
-    Aibadge.remove();
-  })
-
-  Humanbadges.forEach(Humanbadge => {
-    Humanbadge.remove();
-  })
-
-  popups.forEach(popup => {
-    popup.remove();
-  })
+    document.querySelectorAll('.ai-warning-container, .human-container, .ai-popup').forEach(el => el.remove());
 }

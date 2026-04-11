@@ -1,4 +1,4 @@
-(() => {
+
     let hideTimer;
     const supabaseUrl = 'https://solsneywdlhvwbtghopw.supabase.co';
     const supabaseKey = 'sb_publishable_dlFufI-1QXA4VJdGoMWxMw_ouWHyl3k';
@@ -312,4 +312,3 @@
             console.error('[AI Guard] Vote failed:', err);
         }
     }
-})();
