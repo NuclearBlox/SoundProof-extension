@@ -1,4 +1,4 @@
-# Check [SoulOverAi](https://souloverai.com/list) automatically 
+# SoundProof - community powered AI music blocklist
 
 ## Don't want to worry about staying up to date? [Get it on the Chrome store!](https://chromewebstore.google.com/detail/detect-skip-ai-music-soul/mbfhdilbcdcnhbaakndiofeahchaclpa?authuser=0&hl=en)
 (I would greatly appreciate the ego boost of getting a download on the web store, too!)
