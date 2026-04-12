@@ -1,4 +1,5 @@
 # SoundProof - Detect, skip and vote on AI music
+# SoundProof - community powered AI music blocklist
 
 ## Don't want to worry about staying up to date? [Get it on the Chrome store!](https://chromewebstore.google.com/detail/detect-skip-ai-music-soul/mbfhdilbcdcnhbaakndiofeahchaclpa?authuser=0&hl=en)
 (I would greatly appreciate the ego boost of getting a download on the web store, too!)
@@ -8,6 +9,7 @@
 
 > [!important]
 > Many things are changing in this build. Check the privacy policy
+> New dataset is done i just need to link it to the client in a nice way! The extension will be moving to a custom dataset made specifically for this extension. Using votes to mark AI instead of relying on one overworked persons dataset. see you soon!
 
 
 > [!note]
