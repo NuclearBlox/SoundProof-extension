@@ -1,3 +1,9 @@
+// Platform check - only run on SoundCloud
+if (!window.location.hostname.includes('soundcloud.com')) {
+    console.warn('soundcloud.js loaded on wrong platform:', window.location.hostname);
+    throw new Error('soundcloud.js is only for SoundCloud');
+}
+
 console.log("loaded on SoundCloud!");
 
 let currentArtist = null;

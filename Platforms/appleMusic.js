@@ -1,3 +1,9 @@
+// Platform check - only run on Apple Music
+if (!window.location.hostname.includes('music.apple.com')) {
+    console.warn('appleMusic.js loaded on wrong platform:', window.location.hostname);
+    throw new Error('appleMusic.js is only for Apple Music');
+}
+
 console.log("Loading on apple music")
 
 function waitForElement(selector, timeout = 10000) {

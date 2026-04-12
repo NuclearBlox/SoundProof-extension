@@ -11,18 +11,46 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://music.youtube.com/*",
-        "https://music.apple.com/*",
-        "https://soundcloud.com/*",
-        "https://open.spotify.com/*"
-      ],
+      "matches": ["https://music.youtube.com/*"],
       "js": [
         "libs/supabase.js",
         "Utils/Badge.js",
         "Utils/popUpHandling.js",
         "Utils/processCurrentSong.js",
         "Platforms/YtMusic.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://open.spotify.com/*"],
+      "js": [
+        "libs/supabase.js",
+        "Utils/Badge.js",
+        "Utils/popUpHandling.js",
+        "Utils/processCurrentSong.js",
+        "Platforms/spotify.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://music.apple.com/*"],
+      "js": [
+        "libs/supabase.js",
+        "Utils/Badge.js",
+        "Utils/popUpHandling.js",
+        "Utils/processCurrentSong.js",
+        "Platforms/appleMusic.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://soundcloud.com/*"],
+      "js": [
+        "libs/supabase.js",
+        "Utils/Badge.js",
+        "Utils/popUpHandling.js",
+        "Utils/processCurrentSong.js",
+        "Platforms/soundcloud.js"
       ],
       "run_at": "document_end"
     }

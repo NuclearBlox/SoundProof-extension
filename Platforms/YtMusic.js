@@ -1,3 +1,9 @@
+// Platform check - only run on YouTube Music
+if (!window.location.hostname.includes('music.youtube.com')) {
+    console.warn('YtMusic.js loaded on wrong platform:', window.location.hostname);
+    throw new Error('YtMusic.js is only for YouTube Music');
+}
+
 console.log("loaded on youtube music!")
 
 let currentArtist = null;

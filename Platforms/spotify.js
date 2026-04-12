@@ -1,3 +1,9 @@
+// Platform check - only run on Spotify
+if (!window.location.hostname.includes('open.spotify.com')) {
+    console.warn('spotify.js loaded on wrong platform:', window.location.hostname);
+    throw new Error('spotify.js is only for Spotify');
+}
+
 console.log("loaded on spotify")
 
 let currentArtist = null;
