@@ -1,37 +1,45 @@
+window.DecideBadge = async function(AIwidth, humanWidth, selector, badgeLocation, skipElement, padding) {
+    const artistElement = document.querySelector(selector);
+    if (!artistElement) return;
 
+    let artistName = artistElement.textContent.trim();
 
-function DecideBadge(AIwidth, humanWidth, selector, badgeLocation, skipElement, padding) {
-    chrome.storage.local.get('aiArtist', (result) => {
-        const artistNames = result.aiArtist || [];
-        console.log("Loaded", artistNames.length, "AI artists from storage");
+    try {
+        const { data, error } = await window.supabaseClient.rpc('get_artist_status', {
+            target_id: artistName
+        });
 
-        const artistElement = document.querySelector(selector)
+        const status = (data && data[0]) ? data[0] : { out_human: 0, out_ai: 0, out_score: 0, out_verified: false };
 
-        if (artistElement) {
-            let artist = artistElement.textContent.trim();
+        const total = status.out_human + status.out_ai;
 
-            const isAI = artistNames.includes(artist.toLowerCase());
+        if (total === 0) {
+            ShowNoDataBadge(humanWidth, badgeLocation, artistName, padding);
+            return;
+        }
 
-            console.log("Is AI?", isAI)
-            if (isAI) {
-                ShowWarningBadge(AIwidth, badgeLocation, artist, padding);
-                chrome.storage.local.get('skipAI', (result) => {
-                    var skipAI = result.skipAI || false;
-                    if (skipAI === true) {
-                        Skip(skipElement);
-                    }
-                });
-            } else {
-                ShowHumanBadge(humanWidth, badgeLocation, artist, padding);
-                console.log('Sent padding: ', padding);
+        const isAI = status.out_ai > status.out_human;
+        const winningSideVotes = isAI ? status.out_ai : status.out_human;
+        const confidencePct = Math.round((winningSideVotes / total) * 100);
+        const tugPct = Math.round((Math.abs(status.out_ai - status.out_human) / total) * 100);
+        const isLean = confidencePct < 75 || total <= 5;
+        const isVerified = status.out_verified;
+
+        if (isAI) {
+            ShowWarningBadge(AIwidth, badgeLocation, artistName, padding, true, isLean, isVerified);
+
+            if (total >= 3 && skipElement) {
+                const { threshold } = await chrome.storage.local.get('threshold');
+                if (tugPct >= (threshold || 50)) {
+                    console.log(`[SoundProof] Skipping ${artistName} — ${tugPct}% AI pull, threshold ${threshold || 50}%`);
+                    skipElement.click();
+                }
             }
         } else {
-            console.log("Artist element not found");
+            ShowHumanBadge(humanWidth, badgeLocation, artistName, padding, true, isLean, isVerified);
         }
-    });
-}
-
-function Skip(skipElement) {
-    skipElement.click();
-    console.log("Skipped song");
-}
+    } catch (err) {
+        console.error("Supabase Error:", err);
+        ShowNoDataBadge(humanWidth, badgeLocation, artistName, padding);
+    }
+};

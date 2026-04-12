@@ -1,3 +1,9 @@
+// Platform check - only run on YouTube Music
+if (!window.location.hostname.includes('music.youtube.com')) {
+    console.warn('YtMusic.js loaded on wrong platform:', window.location.hostname);
+    throw new Error('YtMusic.js is only for YouTube Music');
+}
+
 console.log("loaded on youtube music!")
 
 let currentArtist = null;
@@ -17,7 +23,7 @@ function checkAndUpdateBadge() {
             console.log("Song changed:", currentTitle, "by", currentArtist, "->", newTitle, "by", newArtist);
             currentArtist = newArtist;
             currentTitle = newTitle;
-            DecideBadge('75px', '50px', '.subtitle.ytmusic-player-bar a', '#left-controls > span', nextButton, 'auto');
+            DecideBadge('90px', '50px', '.subtitle.ytmusic-player-bar a', '#left-controls > span', nextButton, 'auto');
         }
     }
 }

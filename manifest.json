@@ -1,64 +1,73 @@
 {
   "manifest_version": 3,
-  "name": "Detect & Skip AI Music - SoulOverAI integration",
-  "version": "3.0.2",
+  "name": "Detect & Skip AI Music - SoundProof",
+  "version": "5.0.0",
   "permissions": ["storage"],
+  "host_permissions": ["https://solsneywdlhvwbtghopw.supabase.co/*"],
   "icons": {
     "16": "Icons/Icon16.png",
     "48": "Icons/Icon48.png",
     "128": "Icons/Icon128.png"
   },
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "Icons/*",
-        "Utils/*"
-      ],
-      "matches": [
-        "https://music.youtube.com/*",
-        "https://music.apple.com/*",
-        "https://open.spotify.com/*"
-      ]
-    }
-  ],
-  "background": {
-    "service_worker": "background.js"
-  },
   "content_scripts": [
     {
       "matches": ["https://music.youtube.com/*"],
       "js": [
+        "libs/supabase.js",
         "Utils/Badge.js",
         "Utils/popUpHandling.js",
         "Utils/processCurrentSong.js",
         "Platforms/YtMusic.js"
-      ]
-    },
-    {
-      "matches": ["https://music.apple.com/*"],
-      "js": [
-        "Utils/Badge.js",
-        "Utils/popUpHandling.js",
-        "Utils/processCurrentSong.js",
-        "Platforms/appleMusic.js"
-      ]
-    },
-    {
-      "matches": ["https://soundcloud.com/*"],
-      "js": [
-        "Utils/Badge.js",
-        "Utils/popUpHandling.js",
-        "Utils/processCurrentSong.js",
-        "Platforms/soundcloud.js"
-      ]
+      ],
+      "run_at": "document_end"
     },
     {
       "matches": ["https://open.spotify.com/*"],
       "js": [
+        "libs/supabase.js",
         "Utils/Badge.js",
         "Utils/popUpHandling.js",
         "Utils/processCurrentSong.js",
         "Platforms/spotify.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://music.apple.com/*"],
+      "js": [
+        "libs/supabase.js",
+        "Utils/Badge.js",
+        "Utils/popUpHandling.js",
+        "Utils/processCurrentSong.js",
+        "Platforms/appleMusic.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://soundcloud.com/*"],
+      "js": [
+        "libs/supabase.js",
+        "Utils/Badge.js",
+        "Utils/popUpHandling.js",
+        "Utils/processCurrentSong.js",
+        "Platforms/soundcloud.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "Icons/*.png",
+        "Badges/*.png",
+        "Utils/*.js",
+        "warning.html"
+      ],
+      "matches": [
+        "https://music.youtube.com/*",
+        "https://music.apple.com/*",
+        "https://soundcloud.com/*",
+        "https://open.spotify.com/*"
       ]
     }
   ]
