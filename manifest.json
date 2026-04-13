@@ -53,6 +53,17 @@
         "Platforms/soundcloud.js"
       ],
       "run_at": "document_end"
+    },
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": [
+        "libs/supabase.js",
+        "Utils/Badge.js",
+        "Utils/popUpHandling.js",
+        "Utils/processCurrentSong.js",
+        "Platforms/youtube.js"
+      ],
+      "run_at": "document_end"
     }
   ],
   "web_accessible_resources": [
@@ -67,7 +78,8 @@
         "https://music.youtube.com/*",
         "https://music.apple.com/*",
         "https://soundcloud.com/*",
-        "https://open.spotify.com/*"
+        "https://open.spotify.com/*",
+        "https://www.youtube.com/*"
       ]
     }
   ]
