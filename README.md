@@ -3,7 +3,7 @@
 ## Don't want to worry about staying up to date? [Get it on the Chrome store!](https://chromewebstore.google.com/detail/detect-skip-ai-music-soul/mbfhdilbcdcnhbaakndiofeahchaclpa?authuser=0&hl=en)
 (I would greatly appreciate the ego boost of getting a download on the web store, too!)
 
-> [!IMPORANT]
+> [!IMPORTANT]
 > If you are here because you are an artist/fan who feels unfairly blocked, you're in luck! [appeal here!](https://github.com/NuclearBlox/SoundProof-extension/wiki/Appealing-an-incorrect-rating)
 
 > [!WARNING]
