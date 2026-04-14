@@ -12,20 +12,22 @@ function getSkipButton() {
 }
 
 function checkAndUpdateBadge() {
-    const badgeLocation = document.querySelector('#below > ytd-watch-metadata');
+    const badgeLocation = document.querySelector('#title > h1 > yt-formatted-string');
     if (!badgeLocation) {
         setTimeout(checkAndUpdateBadge, 500);
         return;
     }
 
-    const artist = document.querySelector('a.yt-simple-endpoint[href^="/@"]');
+    // Get the #channel-name link that actually has text
+    const artistLinks = document.querySelectorAll('#channel-name a');
+    const artist = Array.from(artistLinks).find(el => el.textContent.trim() !== '');
     if (!artist) {
         setTimeout(checkAndUpdateBadge, 500);
         return;
     }
 
     const skipButton = getSkipButton();
-    DecideBadge('90px', '50px', 'a.yt-simple-endpoint[href^="/@"]', '#below > ytd-watch-metadata', skipButton, 'auto');
+    DecideBadge('40px', '40px', '#channel-name a[href^="/@"]:not(:empty)', '#title > h1 > yt-formatted-string', skipButton, '15px', "video");
 }
 
 function onNavigate() {

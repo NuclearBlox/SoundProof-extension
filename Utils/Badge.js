@@ -27,8 +27,8 @@ function makeBadge(src, width) {
     return badge;
 }
 
-function attachPopup(container, badge, human, artist) {
-    container.addEventListener('mouseenter', () => showPopup(container, badge, human, artist));
+function attachPopup(container, badge, human, artist, platformClass) {
+    container.addEventListener('mouseenter', () => showPopup(container, badge, human, artist, platformClass));
     container.addEventListener('mouseleave', () => hidePopup());
 }
 
@@ -36,7 +36,7 @@ function insertBadge(container, placement) {
     placement.parentElement.insertBefore(container, placement.nextSibling);
 }
 
-function ShowWarningBadge(width, selector, artist, padding, removePrev = true, isLean = false, isVerified = false) {
+function ShowWarningBadge(width, selector, artist, padding, removePrev = true, isLean = false, isVerified = false, platformClass) {
     const placement = getPlacement(selector);
     if (!placement) return;
     if (removePrev) RemoveBadges();
@@ -51,12 +51,12 @@ function ShowWarningBadge(width, selector, artist, padding, removePrev = true, i
     }
 
     container.appendChild(badge);
-    attachPopup(container, badge, false, artist);
+    attachPopup(container, badge, false, artist, platformClass);
     insertBadge(container, placement);
     return badge;
 }
 
-function ShowHumanBadge(width, selector, artist, padding, removePrev = true, isLean = false, isVerified = false) {
+function ShowHumanBadge(width, selector, artist, padding, removePrev = true, isLean = false, isVerified = false, platformClass) {
     const placement = getPlacement(selector);
     if (!placement) return;
     if (removePrev) RemoveBadges();
@@ -67,12 +67,12 @@ function ShowHumanBadge(width, selector, artist, padding, removePrev = true, isL
     badge.style.opacity = '0.75';
 
     container.appendChild(badge);
-    attachPopup(container, badge, true, artist);
+    attachPopup(container, badge, false, artist, platformClass);
     insertBadge(container, placement);
     return badge;
 }
 
-function ShowNoDataBadge(width, selector, artist, padding, removePrev = true) {
+function ShowNoDataBadge(width, selector, artist, padding, removePrev = true, platformClass) {
     const placement = getPlacement(selector);
     if (!placement) return;
     if (removePrev) RemoveBadges();
@@ -82,7 +82,7 @@ function ShowNoDataBadge(width, selector, artist, padding, removePrev = true) {
     badge.style.opacity = '0.5';
 
     container.appendChild(badge);
-    attachPopup(container, badge, true, artist);
+    attachPopup(container, badge, false, artist, platformClass);
     insertBadge(container, placement);
     return badge;
 }

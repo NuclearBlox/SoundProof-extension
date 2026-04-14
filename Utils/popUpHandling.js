@@ -26,10 +26,11 @@
         return '#71717a';
     }
 
-    async function fetchArtistStatus(artist) {
+    async function fetchArtistStatus(artist, platformClass) {
         try {
             const { data, error } = await window.supabaseClient.rpc('get_artist_status', {
-                target_id: artist.toLowerCase()
+                target_id: artist.toLowerCase(),
+                platform_input: platformClass
             });
             if (error) { console.error('[AI Guard] get_artist_status error:', error); return DEFAULT_STATUS; }
             if (Array.isArray(data) && data.length > 0) return data[0];
@@ -41,7 +42,7 @@
         }
     }
 
-    window.showPopup = async function(container, badge, human, artist) {
+    window.showPopup = async function(container, badge, human, artist, platformClass) {
         clearTimeout(hideTimer);
         const existingHost = document.body.querySelector('.ai-guard-wrapper');
         if (existingHost) existingHost.remove();
@@ -232,10 +233,11 @@
         host.onmouseleave = () => window.hidePopup();
 
         const [status, res] = await Promise.all([
-            fetchArtistStatus(artist),
-            chrome.storage.local.get('threshold')
-        ]);
+    fetchArtistStatus(artist, platformClass),  // add platformClass
+    chrome.storage.local.get('threshold')
+]);
 
+        
         if (!document.body.contains(host)) return;
 
         const threshold = res.threshold || 50;
@@ -284,8 +286,8 @@
             vA.removeAttribute('disabled');
             if (status.my_current_vote === 'human') vH.classList.add('voted-h');
             if (status.my_current_vote === 'ai') vA.classList.add('voted-a');
-            vH.onclick = () => castVote(artist, 'human', badge);
-            vA.onclick = () => castVote(artist, 'ai', badge);
+            vH.onclick = () => castVote(artist, 'human', badge, platformClass);
+            vA.onclick = () => castVote(artist, 'ai', badge, platformClass);
         }
 
         shadow.querySelector('#skip-in').value = threshold;
@@ -299,16 +301,17 @@
             if (host) host.remove();
         }, 300);
     };
-
-    async function castVote(artistName, type, badge) {
-        try {
-            const { error } = await window.supabaseClient.rpc('handle_vote', {
-                artist_id_input: artistName,
-                vote_type_input: type
-            });
-            if (error) console.error('[AI Guard] handle_vote error:', error);
-            window.showPopup(null, badge, null, artistName);
-        } catch (err) {
-            console.error('[AI Guard] Vote failed:', err);
-        }
+    
+async function castVote(artistName, type, badge, platformClass) {
+    try {
+        const { error } = await window.supabaseClient.rpc('handle_vote', {
+            artist_id_input: artistName,
+            vote_type_input: type,
+            platform_input: platformClass
+        });
+        if (error) console.error('[SoundProof] handle_vote error:', error);
+        window.showPopup(null, badge, null, artistName, platformClass);
+    } catch (err) {
+        console.error('[AI Guard] Vote failed:', err);
     }
+}
