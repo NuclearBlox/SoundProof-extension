@@ -1,5 +1,4 @@
-
-    let hideTimer;
+let hideTimer;
     const supabaseUrl = 'https://solsneywdlhvwbtghopw.supabase.co';
     const supabaseKey = 'sb_publishable_dlFufI-1QXA4VJdGoMWxMw_ouWHyl3k';
 
@@ -40,6 +39,39 @@
             console.error('[AI Guard] Fetch failed:', err);
             return DEFAULT_STATUS;
         }
+    }
+
+    function positionPopup(host, badge) {
+        const MARGIN = 12;
+        const POP_W = 360;
+
+        const rect = badge.getBoundingClientRect();
+        const popH = host.getBoundingClientRect().height || 260;
+
+        // Default: centered above the badge
+        let left = rect.left + rect.width / 2 - POP_W / 2;
+        let top = rect.top - popH - MARGIN;
+
+        // Clamp horizontally within viewport
+        left = Math.max(MARGIN, Math.min(left, window.innerWidth - POP_W - MARGIN));
+
+        // If it goes off the top, flip below the badge
+        if (top < MARGIN) {
+            top = rect.bottom + MARGIN;
+        }
+
+        // If it now goes off the bottom, just clamp it
+        const maxTop = window.innerHeight - popH - MARGIN;
+        if (top > maxTop) {
+            top = Math.max(MARGIN, maxTop);
+        }
+
+        host.style.cssText = `
+            position: fixed;
+            left: ${left}px;
+            top: ${top}px;
+            z-index: 2147483647;
+        `;
     }
 
     window.showPopup = async function(container, badge, human, artist, platformClass) {
@@ -224,21 +256,27 @@
             </div>
         `;
 
-        const rect = badge.getBoundingClientRect();
-        host.style.cssText = `position: fixed; left: ${rect.left + rect.width / 2}px; top: ${rect.top - 12}px; transform: translate(-50%, -100%); z-index: 2147483647;`;
+        // Set initial off-screen position to avoid flash, then append
+        host.style.cssText = 'position: fixed; left: -9999px; top: -9999px; z-index: 2147483647;';
         shadow.appendChild(style);
         shadow.appendChild(card);
         document.body.appendChild(host);
+
+        // Position after the element is in the DOM so we can measure its height
+        requestAnimationFrame(() => positionPopup(host, badge));
+
         host.onmouseenter = () => clearTimeout(hideTimer);
         host.onmouseleave = () => window.hidePopup();
 
         const [status, res] = await Promise.all([
-    fetchArtistStatus(artist, platformClass),  // add platformClass
-    chrome.storage.local.get('threshold')
-]);
+            fetchArtistStatus(artist, platformClass),
+            chrome.storage.local.get('threshold')
+        ]);
 
-        
         if (!document.body.contains(host)) return;
+
+        // Re-position after data loads in case content height changed
+        requestAnimationFrame(() => positionPopup(host, badge));
 
         const threshold = res.threshold || 50;
         const total = status.out_human + status.out_ai;
@@ -301,17 +339,17 @@
             if (host) host.remove();
         }, 300);
     };
-    
-async function castVote(artistName, type, badge, platformClass) {
-    try {
-        const { error } = await window.supabaseClient.rpc('handle_vote', {
-            artist_id_input: artistName,
-            vote_type_input: type,
-            platform_input: platformClass
-        });
-        if (error) console.error('[SoundProof] handle_vote error:', error);
-        window.showPopup(null, badge, null, artistName, platformClass);
-    } catch (err) {
-        console.error('[AI Guard] Vote failed:', err);
+
+    async function castVote(artistName, type, badge, platformClass) {
+        try {
+            const { error } = await window.supabaseClient.rpc('handle_vote', {
+                artist_id_input: artistName,
+                vote_type_input: type,
+                platform_input: platformClass
+            });
+            if (error) console.error('[SoundProof] handle_vote error:', error);
+            window.showPopup(null, badge, null, artistName, platformClass);
+        } catch (err) {
+            console.error('[AI Guard] Vote failed:', err);
+        }
     }
-}

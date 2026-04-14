@@ -1,5 +1,4 @@
 if (!window.location.hostname.includes('youtube.com') || window.location.hostname.includes('music.youtube.com')) {
-    console.warn('YouTube.js loaded on wrong platform:', window.location.hostname);
     throw new Error('YouTube.js is only for regular YouTube');
 }
 
@@ -18,13 +17,15 @@ function checkAndUpdateBadge() {
         return;
     }
 
-    // Get the #channel-name link that actually has text
     const artistLinks = document.querySelectorAll('#channel-name a');
     const artist = Array.from(artistLinks).find(el => el.textContent.trim() !== '');
     if (!artist) {
         setTimeout(checkAndUpdateBadge, 500);
         return;
     }
+
+    // Stamp the unique handle onto the element so DecideBadge can use it instead of textContent
+    artist.dataset.soundproofId = artist.getAttribute('href'); // e.g. "/@t3dotgg"
 
     const skipButton = getSkipButton();
     DecideBadge('40px', '40px', '#channel-name a[href^="/@"]:not(:empty)', '#title > h1 > yt-formatted-string', skipButton, '15px', "video");
