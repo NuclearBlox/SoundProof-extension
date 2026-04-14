@@ -31,7 +31,7 @@ function checkAndUpdateBadge() {
         currentArtist = newArtist;
         currentTitle = newTitle;
         
-        DecideBadge('75px', '50px', '#main > div > div.iRGr6yO6lPcAKUoT > div.YdGOYWQYr6kqh7KU > aside > div > div.ZJCXNvTeX4pAS9rt > div > div.KN5KA9u52qQprYjq.PZqkGvH2tH8xbDWT > div.xSfZMAalZIg2nzIs > div > span > span > div > span > a', '#main > div > div.iRGr6yO6lPcAKUoT > div.YdGOYWQYr6kqh7KU > aside > div > div.ZJCXNvTeX4pAS9rt > div > div.mD6MFF1cf5MA9Uhb', nextButton, '4px');
+        DecideBadge('75px', '50px', '#main > div > div.iRGr6yO6lPcAKUoT > div.YdGOYWQYr6kqh7KU > aside > div > div.ZJCXNvTeX4pAS9rt > div > div.KN5KA9u52qQprYjq.PZqkGvH2tH8xbDWT > div.xSfZMAalZIg2nzIs > div > span > span > div > span > a', '#main > div > div.iRGr6yO6lPcAKUoT > div.YdGOYWQYr6kqh7KU > aside > div > div.ZJCXNvTeX4pAS9rt > div > div.mD6MFF1cf5MA9Uhb', nextButton, '4px', 'music');
     }
 }
 

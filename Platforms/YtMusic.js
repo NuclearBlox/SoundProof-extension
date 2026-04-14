@@ -23,7 +23,7 @@ function checkAndUpdateBadge() {
             console.log("Song changed:", currentTitle, "by", currentArtist, "->", newTitle, "by", newArtist);
             currentArtist = newArtist;
             currentTitle = newTitle;
-            DecideBadge('90px', '50px', '.subtitle.ytmusic-player-bar a', '#left-controls > span', nextButton, 'auto');
+            DecideBadge('90px', '50px', '.subtitle.ytmusic-player-bar a', '#left-controls > span', nextButton, 'auto', 'music');
         }
     }
 }
