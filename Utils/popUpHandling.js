@@ -225,7 +225,7 @@ let hideTimer;
             <div class="top">
                 <div class="name-box">
                     <div class="name">${artist}</div>
-                    <a href="https://github.com/NuclearBlox/Check-SoulOverAI-extension/wiki/How-songs-status-gets-decided" target="_blank" class="sub">How it's decided →</a>
+                    <a href="https://github.com/NuclearBlox/Check-SoulOverAI-extension/wiki/How-songs-status-gets-decided" target="_blank" class="sub">How it works & FAQ →</a>
                 </div>
                 <div class="verdict">
                     <div class="pct" style="color:var(--dim)">—%</div>
