@@ -46,7 +46,7 @@ let hideTimer;
         const POP_W = 360;
 
         const rect = badge.getBoundingClientRect();
-        const popH = host.getBoundingClientRect().height || 260;
+        const popH = host.getBoundingClientRect().height ?? 260;
 
         // Default: centered above the badge
         let left = rect.left + rect.width / 2 - POP_W / 2;
@@ -285,18 +285,20 @@ let hideTimer;
         host.onmouseenter = () => clearTimeout(hideTimer);
         host.onmouseleave = () => window.hidePopup();
 
-        const [status, res] = await Promise.all([
-            fetchArtistStatus(artist, platformClass),
-            chrome.storage.local.get('threshold'),
-            chrome.storage.local.get('minVotes')
-        ]);
+       const [status, thresholdRes, minVotesRes] = await Promise.all([
+    fetchArtistStatus(artist, platformClass),
+    chrome.storage.local.get('threshold'),
+    chrome.storage.local.get('minVotes')
+]);
+
         if (!document.body.contains(host)) return;
 
         // Re-position after data loads in case content height changed
         requestAnimationFrame(() => positionPopup(host, badge));
 
-        const threshold = res.threshold || 50;
-        const minVotes = res.minVotes || 3;
+
+        const threshold = thresholdRes.threshold ?? 50;
+        const minVotes = minVotesRes.minVotes ?? 3;
         const total = status.out_human + status.out_ai;
         const isEmpty = total === 0;
         let hPct = 0, aPct = 0, displayPct = 0, label = 'UNKNOWN';
@@ -347,7 +349,7 @@ let hideTimer;
         }
 
         shadow.querySelector('#skip-in').value = threshold;
-        shadow.querySelector('#min-votes').value = minVotes;
+        shadow.querySelector('#min-in').value = minVotes;
         shadow.querySelector('#skip-in').onchange = (e) =>
             chrome.storage.local.set({ threshold: e.target.value });
 
