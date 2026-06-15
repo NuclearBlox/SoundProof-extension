@@ -211,7 +211,7 @@ let hideTimer;
             .skip-in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
             .skip-in:focus { outline: none; border-color: var(--human); }
                         .min-in::-webkit-outer-spin-button,
-            .min-in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+            .min-in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; } /* im FAR too lazy to do it all fancy */
             .min-in:focus { outline: none; border-color: var(--human); }
             .pct-symbol { position: absolute; right: 6px; font-size: 9px; color: var(--dim); pointer-events: none; }
             .ai-label { color: var(--dim); font-weight: 700; text-transform: uppercase; font-size: 9px; letter-spacing: 0.05em; }
@@ -262,8 +262,8 @@ let hideTimer;
 
     <span style="margin-left:6px;">with</span>
 
-    <div class="min votes wrapper">
-        <input type="number" id="vote-in" class="min-in" value="3">
+    <div class="min-votes-wrapper">
+        <input type="number" id="min-in" class="min-in" value="3">
     </div>
     <span class="ai-label">votes</span>
 </div>
@@ -287,15 +287,16 @@ let hideTimer;
 
         const [status, res] = await Promise.all([
             fetchArtistStatus(artist, platformClass),
-            chrome.storage.local.get('threshold')
+            chrome.storage.local.get('threshold'),
+            chrome.storage.local.get('minVotes')
         ]);
-
         if (!document.body.contains(host)) return;
 
         // Re-position after data loads in case content height changed
         requestAnimationFrame(() => positionPopup(host, badge));
 
         const threshold = res.threshold || 50;
+        const minVotes = res.minVotes || 3;
         const total = status.out_human + status.out_ai;
         const isEmpty = total === 0;
         let hPct = 0, aPct = 0, displayPct = 0, label = 'UNKNOWN';
@@ -346,8 +347,12 @@ let hideTimer;
         }
 
         shadow.querySelector('#skip-in').value = threshold;
+        shadow.querySelector('#min-votes').value = minVotes;
         shadow.querySelector('#skip-in').onchange = (e) =>
             chrome.storage.local.set({ threshold: e.target.value });
+
+         shadow.querySelector('#min-in').onchange = (e) =>
+            chrome.storage.local.set({ minVotes: e.target.value });
     };
 
     window.hidePopup = function() {
