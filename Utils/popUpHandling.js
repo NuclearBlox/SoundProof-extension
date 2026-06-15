@@ -350,6 +350,6 @@ let hideTimer;
             if (error) console.error('[SoundProof] handle_vote error:', error);
             window.showPopup(null, badge, null, artistName, platformClass);
         } catch (err) {
-            console.error('[AI Guard] Vote failed:', err);
+            console.error('[SoundProof] Vote failed:', err);
         }
     }
