@@ -1,5 +1,5 @@
 window.DecideBadge = async function(AIwidth, humanWidth, selector, badgeLocation, skipElement, padding, platformClass) {
-    const artistElement = Array.from(document.querySelectorAll(selector)).find(el => el.textContent.trim() !== '') || document.querySelector(selector);
+    const artistElement = Array.from(document.querySelectorAll(selector)).find(el => el.textContent.trim() !== '') ?? document.querySelector(selector);
     if (!artistElement) return;
 
     // Use stamped handle if present (e.g. YouTube), otherwise fall back to display name
@@ -29,10 +29,10 @@ window.DecideBadge = async function(AIwidth, humanWidth, selector, badgeLocation
 
         if (isAI) {
             ShowWarningBadge(AIwidth, badgeLocation, artistName, padding, true, isLean, isVerified, platformClass);
-
-            if (total >= 3 && skipElement) {
+            const { minVotes } = await chrome.storage.local.get('minVotes');
+            if (total >= (minVotes ?? 3) && skipElement) {
                 const { threshold } = await chrome.storage.local.get('threshold');
-                if (tugPct >= (threshold || 50)) {
+                if (tugPct >= (threshold ?? 50)) {
                     console.log(`[SoundProof] Skipping ${artistName} — ${tugPct}% AI pull, threshold ${threshold || 50}%`);
                     skipElement.click();
                 }
