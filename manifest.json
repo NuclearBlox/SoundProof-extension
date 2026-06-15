@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Detect & Skip AI Music - SoundProof",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "permissions": ["storage"],
   "host_permissions": ["https://solsneywdlhvwbtghopw.supabase.co/*"],
   "icons": {
