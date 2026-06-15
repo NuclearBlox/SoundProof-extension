@@ -1,3 +1,5 @@
+
+/* UNFINISHED WITH NO CURRENT PLANS TO FINISH
 if (!window.location.hostname.includes('youtube.com') || window.location.hostname.includes('music.youtube.com')) {
     throw new Error('YouTube.js is only for regular YouTube');
 }
@@ -48,3 +50,4 @@ window.addEventListener('yt-navigate-finish', onNavigate);
 if (window.location.pathname.startsWith('/watch')) {
     setTimeout(checkAndUpdateBadge, 1500);
 }
+    */
