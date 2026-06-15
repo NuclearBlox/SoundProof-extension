@@ -196,14 +196,23 @@ let hideTimer;
 
             .skip-input-wrapper { position: relative; display: flex; align-items: center; }
             .skip-in {
-                width: 52px; background: #18181b; border: 1.5px solid #333; color: var(--human);
+                width: 32px; background: #18181b; border: 1.5px solid #333; color: var(--human);
                 border-radius: 6px; text-align: left; font-family: 'Saira Extra Condensed', sans-serif;
                 font-size: 16px; font-weight: 700; padding: 3px 18px 3px 6px;
+                appearance: textfield; transition: border-color 0.2s;
+            }
+            .min-in {
+                width: 24px; background: #18181b; border: 1.5px solid #333; color: var(--human);
+                border-radius: 6px; text-align: left; font-family: 'Saira Extra Condensed', sans-serif;
+                font-size: 16px; font-weight: 700; padding: 3px 3px 3px 6px;
                 appearance: textfield; transition: border-color 0.2s;
             }
             .skip-in::-webkit-outer-spin-button,
             .skip-in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
             .skip-in:focus { outline: none; border-color: var(--human); }
+                        .min-in::-webkit-outer-spin-button,
+            .min-in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+            .min-in:focus { outline: none; border-color: var(--human); }
             .pct-symbol { position: absolute; right: 6px; font-size: 9px; color: var(--dim); pointer-events: none; }
             .ai-label { color: var(--dim); font-weight: 700; text-transform: uppercase; font-size: 9px; letter-spacing: 0.05em; }
 
@@ -243,13 +252,21 @@ let hideTimer;
             </div>
             <div class="footer">
                 <div class="skip">
-                    Skip past
-                    <div class="skip-input-wrapper">
-                        <input type="number" id="skip-in" class="skip-in" value="50">
-                        <span class="pct-symbol">%</span>
-                    </div>
-                    <span class="ai-label">AI</span>
-                </div>
+    Skip past
+
+    <div class="skip-input-wrapper">
+        <input type="number" id="skip-in" class="skip-in" value="50">
+        <span class="pct-symbol">%</span>
+    </div>
+    <span class="ai-label">AI</span>
+
+    <span style="margin-left:6px;">with</span>
+
+    <div class="min votes wrapper">
+        <input type="number" id="vote-in" class="min-in" value="3">
+    </div>
+    <span class="ai-label">votes</span>
+</div>
                 <a href="https://github.com/NuclearBlox/Check-SoulOverAI-extension/wiki/Appealing-an-incorrect-rating" target="_blank" class="appeal">
                     <span>Appeal</span><span class="full">Mistake?</span>
                 </a>

@@ -1,4 +1,4 @@
-console.log("Fetching AI artist data...");
+/*console.log("Fetching AI artist data...");
 
 fetch("https://raw.githubusercontent.com/xoundbyte/soul-over-ai/main/dist/artists.json")
   .then(response => response.json())
@@ -15,3 +15,4 @@ fetch("https://raw.githubusercontent.com/xoundbyte/soul-over-ai/main/dist/artist
       return artistNames.includes(LowerCaseName, data);
     }
   });
+  */
