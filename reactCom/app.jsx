@@ -1,0 +1,34 @@
+import React from 'react'
+import './styles.css'
+import { useState } from 'react';
+
+function Chip({word}) {
+
+  const [isActive, setIsActive] = useState(false);
+  const handleClick = () => {
+    console.log('Button clicked!');
+    setIsActive(!isActive);
+  }
+    return(
+       <button className={isActive ? 'chip-active' : 'chip-inactive'}
+        onClick={handleClick}
+        >
+          {word}
+        </button>
+    );
+}
+export default function Card() {
+  return (
+    <div className="seperator">
+      <Chip word='dragonite'/>
+      <Chip word='flareon' />
+      <Chip word='mew' />
+    </div>
+        
+
+        
+  );
+}
+
+
+
