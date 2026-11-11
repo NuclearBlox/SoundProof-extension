@@ -1,17 +1,37 @@
 
+:root {
+    --primary: #ffffff;
+
+    --background: #00000079;
+
+    --textColor: #ffffff;
+    --selectedTextColor: #000000;
+    --SelectedColor: #fa1849;
+    --easing: cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+.stack {
+    display: grid;
+    place-items: center;
+}
+.stack > * {
+  grid-area: 1 / 1;
+}
+button {
+    font-weight: bold;
+}
 .chip-inactive {
     
     background-color: transparent;
     border-radius: 10px;
-    border: 3px solid #000000;
+    border: 3px solid #ffffff;
     padding: 6px 16px;
-    transition: padding .1s ease-in-out;
-
-
+    transition: padding .1s var(--easing), border-radius .01s var(--easing), color .01s var(--easing);
+    color: #ffffff;
+    height: 30px;
 }
 
 .chip-inactive:hover {
-    background-color: transparent;
     cursor: pointer;
     padding: 6px 20px;
 }
@@ -19,26 +39,49 @@
 .chip-inactive {
     background-color: transparent;
     padding: 6px 16px;
+     height: 30px;
 }
 
 
 .chip-active {
     
     background-color: transparent;
-    border-radius: 10px;
-    border: 3px solid #fa1849;
-    color: #fa1849;
+    border-radius: 20px;
+    border: 3px solid var(--SelectedColor);
+    background-color: var(--SelectedColor);
+    color:var(--primary);
     padding: 6px 16px;
-    transition: padding .1s ease-in-out;
+    transition: border-radius .1s var(--easing), padding .1s var(--easing);
+     height: 30px;
+     font-weight: 90px;
+
 }
 
 .chip-active:hover {
-    background-color: transparent;
     cursor: pointer;
     padding: 6px 20px;
 }
 
-.seperator {
+.grid {
     display: flex;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 5px 5px;
+    transform-origin: center;
+    transition: transform .1s var(--easing);
+     
+    grid-template-columns: repeat(4, max-content);
+}
+
+.main {
+    background-color: var(--background);
+    cursor: pointer;
+    padding: 20px;
+    border: 3px solid #a3a2a267; 
+    border-radius: 20px;
+
+      backdrop-filter: blur(10px);
+     -webkit-backdrop-filter: blur(10px);
+
+     width: 500px;
+     height: 300px;
 }

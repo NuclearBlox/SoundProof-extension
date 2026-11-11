@@ -19,14 +19,19 @@ function Chip({word}) {
 }
 export default function Card() {
   return (
-    <div className="seperator">
+    
+    <div className="main" >
+      <div className="grid">
+      <Chip word='dragoniteeeeee'/>
+      <Chip word='flareon' />
+      <Chip word='mew' />
+      <Chip word='pikachu' />
       <Chip word='dragonite'/>
       <Chip word='flareon' />
       <Chip word='mew' />
+      <Chip word='pikachu' />
+      </div>
     </div>
-        
-
-        
   );
 }
 
