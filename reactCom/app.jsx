@@ -30,8 +30,9 @@ export default function Card() {
   return (
     
     <div className="main" >
+
       <TopBar />
-      <div className="selection">
+      <div className="selectors">
 
         <text className="selection-text">Terms</text> <text className="selection-subtext">select a term to block it</text>
         <div className="grid">
@@ -46,8 +47,12 @@ export default function Card() {
         <Chip word='mew' />
         <Chip word='pikachu' />
       </div>
+        <div className="grid">
+        <Chip word='Artist' /><Chip word='This song' /> 
+        </div>
+        <div className="divider"></div>
+              
       </div>
-
     </div>
   );
 }

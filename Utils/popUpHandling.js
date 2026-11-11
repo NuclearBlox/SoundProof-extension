@@ -1,4 +1,8 @@
 // NOTE: This file has grown to be quite a mess weird chrome bug could only be fixed by moving the popup code to its own file. It currently works so no plan to refactor it, but if you do, be careful with the shadow DOM and event listeners. They are a bit tricky to get right.
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import Card from './reactCom/app.jsx';
+
 
 let hideTimer;
     const supabaseUrl = 'https://solsneywdlhvwbtghopw.supabase.co';
@@ -96,7 +100,17 @@ function positionPopup(host, badge) {
         }
     }
 
+    window.showPopup = async function(container, badge, human, artist, platformClass) {
+        clearTimeout(hideTimer);
+        const existingHost = document.body.querySelector('.ai-guard-wrapper');
+        if (existingHost) existingHost.remove();
 
+        const mountPoint = document.createElement('div');
+        const root = createRoot(mountPoint);
+
+        
+        shadow.appendChild(mountPoint);
+        root.render(React.createElement(Card)); 
 
     window.hidePopup = function() {
         hideTimer = setTimeout(() => {
@@ -118,3 +132,4 @@ function positionPopup(host, badge) {
             console.error('[SoundProof] Vote failed:', err);
         }
     }
+}
