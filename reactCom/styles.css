@@ -1,13 +1,16 @@
-
 :root {
     --primary: #ffffff;
-
     --background: #00000079;
-
     --textColor: #ffffff;
     --selectedTextColor: #000000;
     --SelectedColor: #fa1849;
     --easing: cubic-bezier(0.83, 0, 0.17, 1);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    --pad-x: 16px;
+    --pad-x-hover: 20px;
+    /* growth on hover is 2 * (20 - 16) = 8px, so reserve a bit more than that */
+    --slack: calc((var(--pad-x-hover) - var(--pad-x)) * 2 + 4px);
 }
 
 .stack {
@@ -15,73 +18,59 @@
     place-items: center;
 }
 .stack > * {
-  grid-area: 1 / 1;
+    grid-area: 1 / 1;
 }
+
 button {
     font-weight: bold;
 }
-.chip-inactive {
-    
-    background-color: transparent;
-    border-radius: 10px;
-    border: 3px solid #ffffff;
-    padding: 6px 16px;
-    transition: padding .1s var(--easing), border-radius .01s var(--easing), color .01s var(--easing);
-    color: #ffffff;
+
+.chip-inactive,
+.chip-active {
+    box-sizing: border-box;
     height: 30px;
-}
-
-.chip-inactive:hover {
+    padding: 6px var(--pad-x);
+    white-space: nowrap;
     cursor: pointer;
-    padding: 6px 20px;
+    transition: padding 0.3s var(--spring),
+                border-radius 0.15s var(--easing);
 }
 
 .chip-inactive {
     background-color: transparent;
-    padding: 6px 16px;
-     height: 30px;
+    border: 3px solid #ffffff;
+    border-radius: 10px;
+    color: #ffffff;
 }
-
 
 .chip-active {
-    
-    background-color: transparent;
-    border-radius: 20px;
-    border: 3px solid var(--SelectedColor);
     background-color: var(--SelectedColor);
-    color:var(--primary);
-    padding: 6px 16px;
-    transition: border-radius .1s var(--easing), padding .1s var(--easing);
-     height: 30px;
-     font-weight: 90px;
-
+    border: 3px solid var(--SelectedColor);
+    border-radius: 20px;
+    color: var(--primary);
 }
 
+.chip-inactive:hover,
 .chip-active:hover {
-    cursor: pointer;
-    padding: 6px 20px;
+    padding: 6px var(--pad-x-hover);
 }
 
 .grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px 5px;
-    transform-origin: center;
-    transition: transform .1s var(--easing);
-     
-    grid-template-columns: repeat(4, max-content);
+    gap: 5px;
+    /* the fix: every row keeps at least this much free space */
+    padding-right: var(--slack);
 }
 
 .main {
     background-color: var(--background);
     cursor: pointer;
     padding: 20px;
-    border: 3px solid #a3a2a267; 
+    border: 3px solid #a3a2a267;
     border-radius: 20px;
-
-      backdrop-filter: blur(10px);
-     -webkit-backdrop-filter: blur(10px);
-
-     width: 500px;
-     height: 300px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    width: 500px;
+    height: 300px;
 }

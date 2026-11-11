@@ -21,15 +21,19 @@ export default function Card() {
   return (
     
     <div className="main" >
+
+
       <div className="grid">
-      <Chip word='dragoniteeeeee'/>
-      <Chip word='flareon' />
-      <Chip word='mew' />
-      <Chip word='pikachu' />
-      <Chip word='dragonite'/>
-      <Chip word='flareon' />
-      <Chip word='mew' />
-      <Chip word='pikachu' />
+       <Chip word='dragoniteeeeee'/>
+        <Chip word='flareon' />
+        <Chip word='mew' />
+        <Chip word='meggggggg' />
+        <Chip word='mew' />
+        <Chip word='pikachu' />
+        <Chip word='dragonite'/>
+        <Chip word='flareon' />
+        <Chip word='mew' />
+        <Chip word='pikachu' />
       </div>
     </div>
   );
