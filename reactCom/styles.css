@@ -1,3 +1,6 @@
+/* this took embarssingly long to figure out. The trick is to make the margin larger
+    than the padding increase, so the layout footprint is unchanged. */
+
 :root {
     --primary: #ffffff;
     --background: #00000079;
@@ -9,10 +12,10 @@
 
     --pad-x: 16px;
     --pad-x-hover: 20px;
-    /* growth on hover is 2 * (20 - 16) = 8px, so reserve a bit more than that */
-    --slack: calc((var(--pad-x-hover) - var(--pad-x)) * 2 + 4px);
+    --grow: calc(var(--pad-x-hover) - var(--pad-x)); /* per side: 4px */
 }
 
+/* ---------------------------------------Debugging--------------------------------------- */
 .stack {
     display: grid;
     place-items: center;
@@ -25,14 +28,47 @@ button {
     font-weight: bold;
 }
 
+/* ---------------------------------------Main--------------------------------------- */
+.main {
+    background-color: var(--background);
+    cursor: pointer;
+    padding: 20px;
+    border: 3px solid #a3a2a267;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    width: 500px;
+    height: 300px;
+}
+
+.selection-text {
+    color: white;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+    font-size: 30px;
+}
+.selection-subtext {
+    color: white;
+    font-weight: regular;
+    font-family: 'Arial', sans-serif;
+    font-size: 12px;
+}
+
+
+/* ---------------------------------------Chips--------------------------------------- */
 .chip-inactive,
 .chip-active {
     box-sizing: border-box;
     height: 30px;
     padding: 6px var(--pad-x);
+    margin: 0;
     white-space: nowrap;
     cursor: pointer;
+    min-width: 0;
+    flex-shrink: 1;
     transition: padding 0.3s var(--spring),
+                margin 0.3s var(--spring),
+                translate 0.3s var(--spring),
                 border-radius 0.15s var(--easing);
 }
 
@@ -50,27 +86,27 @@ button {
     color: var(--primary);
 }
 
+/* Hovered chip: looks wider, but its layout footprint is unchanged
+   (padding +grow, margin -grow on each side), so rows never re-wrap. */
 .chip-inactive:hover,
 .chip-active:hover {
     padding: 6px var(--pad-x-hover);
+    margin-inline: calc(var(--grow) * -1);
+}
+
+/* ---------------------------------------Grids--------------------------------------- */
+/* Visual "push": siblings slide out of the way using translate (no layout effect) */
+.grid > :is(.chip-inactive, .chip-active):hover ~ :is(.chip-inactive, .chip-active) {
+    translate: var(--grow) 0;
+}
+.grid > :is(.chip-inactive, .chip-active):has(~ :is(.chip-inactive, .chip-active):hover) {
+    translate: calc(var(--grow) * -1) 0;
 }
 
 .grid {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    /* the fix: every row keeps at least this much free space */
-    padding-right: var(--slack);
+    padding: 0 var(--grow); /* room so a shifted/expanded edge chip isn't clipped */
 }
 
-.main {
-    background-color: var(--background);
-    cursor: pointer;
-    padding: 20px;
-    border: 3px solid #a3a2a267;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    width: 500px;
-    height: 300px;
-}

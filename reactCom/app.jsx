@@ -17,17 +17,28 @@ function Chip({word}) {
         </button>
     );
 }
+
+function TopBar() {
+  return(
+    <div className="top-bar">
+      
+    </div>
+    );
+}
+
 export default function Card() {
   return (
     
     <div className="main" >
+      <TopBar />
+      <div className="selection">
 
-
-      <div className="grid">
-       <Chip word='dragoniteeeeee'/>
+        <text className="selection-text">Terms</text> <text className="selection-subtext">select a term to block it</text>
+        <div className="grid">
+        <Chip word='dragoniteeeeee'/>
         <Chip word='flareon' />
         <Chip word='mew' />
-        <Chip word='meggggggg' />
+        <Chip word='meggggggggggggggg' />
         <Chip word='mew' />
         <Chip word='pikachu' />
         <Chip word='dragonite'/>
@@ -35,6 +46,8 @@ export default function Card() {
         <Chip word='mew' />
         <Chip word='pikachu' />
       </div>
+      </div>
+
     </div>
   );
 }
