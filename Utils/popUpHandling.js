@@ -1,7 +1,7 @@
 // NOTE: This file has grown to be quite a mess weird chrome bug could only be fixed by moving the popup code to its own file. It currently works so no plan to refactor it, but if you do, be careful with the shadow DOM and event listeners. They are a bit tricky to get right.
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import Card from './reactCom/app.jsx';
+import Card from '../reactCom/app.jsx';
 
 
 let hideTimer;
