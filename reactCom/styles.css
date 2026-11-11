@@ -6,6 +6,8 @@
     border: 3px solid #000000;
     padding: 6px 16px;
     transition: padding .1s ease-in-out;
+
+
 }
 
 .chip-inactive:hover {
