@@ -32,7 +32,21 @@
 
 const LOG_PREFIX = '[SoundProof]';
 
-const SUPABASE_URL = 'https://solsneywdlhvwbtghopw.supabase.co';
+
+//    ██     ██  █████  ██ ████████      █████      ███████ ███████  ██████ ██ 
+//    ██     ██ ██   ██ ██    ██        ██   ██     ██      ██      ██      ██ 
+//    ██  █  ██ ███████ ██    ██        ███████     ███████ █████   ██      ██ 
+//    ██ ███ ██ ██   ██ ██    ██        ██   ██          ██ ██      ██         
+//     ███ ███  ██   ██ ██    ██        ██   ██     ███████ ███████  ██████ ██ 
+
+// You can put the scraper away! The database is already free and updated daily at https://github.com/NuclearBlox/SoundProof-Dumps
+// If you would like to use our data, please use the SoundProof dumps; our API is really only able to handle SoundProof itself (hence the heavy caching on the client).
+// The dumps contain both the full dataset and everything that changed in the most recent update.
+// If you need anything else, please open an issue! We would be happy to provide any data we have.
+
+const SUPABASE_URL = 'https://solsneywdlhvwbtghopw.supabase.co'; 
+
+
 const SUPABASE_KEY = 'sb_publishable_dlFufI-1QXA4VJdGoMWxMw_ouWHyl3k';
 
 const WIKI_BASE = 'https://github.com/NuclearBlox/Check-SoulOverAI-extension/wiki';
