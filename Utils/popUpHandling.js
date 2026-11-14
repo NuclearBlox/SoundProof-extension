@@ -1,10 +1,10 @@
 // =============================================================================
 // SoundProof popup
 //
-// NOTE: The popup code lives in its own file because Chromes *odd* security 
-// doesnt allow CSS or HTML to be injected from a content script which
+// NOTE: The popup code lives in its own file because Chrome's *odd* security 
+// doesn't allow CSS or HTML to be injected from a content script, which
 // could only be fixed by cramming a year of work into one file.
-//  Masochist rejoice! with the shadow DOM and event listeners this file is a nightmare to debug and maintain, 
+// Masochists rejoice! with the shadow DOM and event listeners, this file is a nightmare to debug and maintain, 
 // but it works...mostly
 //
 // Expects (defined in other content scripts / libs):
