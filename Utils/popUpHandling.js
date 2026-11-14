@@ -1,9 +1,11 @@
 // =============================================================================
 // SoundProof popup
 //
-// NOTE: The popup code lives in its own file because Chromes *odd* security
-// could only be fixed by moving it here. If you refactor further, be careful
-// with the shadow DOM and event listeners; they are nightmarish.
+// NOTE: The popup code lives in its own file because Chromes *odd* security 
+// doesnt allow CSS or HTML to be injected from a content script which
+// could only be fixed by cramming a year of work into one file.
+//  Masochist rejoice! with the shadow DOM and event listeners this file is a nightmare to debug and maintain, 
+// but it works...mostly
 //
 // Expects (defined in other content scripts / libs):
 //   - supabase                    (supabase-js global)
@@ -20,6 +22,7 @@
 //   7. Positioning
 //   8. Render functions (one per section of the card)
 //   9. Public entry points: showPopup / hidePopup / castVote
+
 // =============================================================================
 
 
