@@ -1,3 +1,7 @@
+# NEW UI BRANCH
+This branch is for implementing the new SoundProof UI
+
+
 # SoundProof - Detect, skip, and vote. A community-powered AI music blocklist
 [![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/mbfhdilbcdcnhbaakndiofeahchaclpa?style=for-the-badge&logo=googlechrome&color=4285F4)](https://chromewebstore.google.com/detail/detect-skip-ai-music-soun/mbfhdilbcdcnhbaakndiofeahchaclpa)
 [![Chrome Web Store Rating](https://img.shields.io/chrome-web-store/rating/mbfhdilbcdcnhbaakndiofeahchaclpa?style=for-the-badge&logo=googlechrome&color=f4b400)](https://chromewebstore.google.com/detail/detect-skip-ai-music-soun/mbfhdilbcdcnhbaakndiofeahchaclpa)
