@@ -17,3 +17,16 @@ fetch("https://raw.githubusercontent.com/xoundbyte/soul-over-ai/main/dist/artist
   });
   */
 // old logic from simpler times
+
+// Just listening for the page
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'open-settings') {
+    // Opens the options_page or options_ui defined in manifest.json
+    chrome.runtime.openOptionsPage(() => {
+      sendResponse({ status: 'opened' });
+    });
+
+    // Return true to keep the message channel open for the async sendResponse
+    return true;
+  }
+});

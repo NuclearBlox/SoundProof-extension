@@ -1,4 +1,4 @@
-window.DecideBadge = async function(AIwidth, humanWidth, selector, badgeLocation, skipElement, padding, platformClass) {
+window.DecideBadge = async function(AIwidth, humanWidth, selector, badgeLocation, skipElement, padding, platformClass, songTitle) {
     const artistElement = Array.from(document.querySelectorAll(selector)).find(el => el.textContent.trim() !== '') ?? document.querySelector(selector);
     if (!artistElement) return;
 
@@ -7,7 +7,7 @@ window.DecideBadge = async function(AIwidth, humanWidth, selector, badgeLocation
 
     const status = await getArtistStatus(artistName, platformClass, false);
 
-    if (status.out_verified) {
+    if (status.out_verified) { // if its verified just set it to a bazilion votes because it doesnt matter
         if (status.out_ai > status.out_human) {
             status.out_ai = 10000000;
             console.log(`[SoundProof] ${artistName} is verified AI. Setting out_ai to 10,000,000.`);
@@ -19,25 +19,31 @@ window.DecideBadge = async function(AIwidth, humanWidth, selector, badgeLocation
 
     const total = status.out_human + status.out_ai;
 
+    let badge;
+    let isAI = false;
+    let tugPct = 0;
+
     if (total === 0) {
-        return ShowNoDataBadge(humanWidth, badgeLocation, artistName, padding, true, platformClass);
+        badge = ShowNoDataBadge(humanWidth, badgeLocation, artistName, padding, true, platformClass, songTitle);
+    } else {
+        isAI = status.out_ai > status.out_human;
+        const winningSideVotes = isAI ? status.out_ai : status.out_human;
+        const confidencePct = Math.round((winningSideVotes / total) * 100);
+        tugPct = Math.round((Math.abs(status.out_ai - status.out_human) / total) * 100);
+        const isLean = confidencePct < 75 || total <= 5;
+        const isVerified = status.out_verified;
+
+        console.log(`[SoundProof] ${artistName} is ${isAI ? 'AI' : 'Human'} (${status.out_ai} AI vs ${status.out_human} Human, ${confidencePct}% confidence, ${tugPct}% tug)`);
+
+        badge = isAI
+            ? ShowWarningBadge(AIwidth, badgeLocation, artistName, padding, true, isLean, isVerified, platformClass, songTitle)
+            : ShowHumanBadge(humanWidth, badgeLocation, artistName, padding, true, isLean, isVerified, platformClass, songTitle);
     }
 
-    let isAI = status.out_ai > status.out_human;
-    const winningSideVotes = isAI ? status.out_ai : status.out_human;
-    const confidencePct = Math.round((winningSideVotes / total) * 100);
-    const tugPct = Math.round((Math.abs(status.out_ai - status.out_human) / total) * 100);
-    const isLean = confidencePct < 75 || total <= 5;
-    const isVerified = status.out_verified;
-
-    console.log(`[SoundProof] ${artistName} is ${isAI ? 'AI' : 'Human'} (${status.out_ai} AI vs ${status.out_human} Human, ${confidencePct}% confidence, ${tugPct}% tug)`);
-
-    const badge = isAI
-        ? ShowWarningBadge(AIwidth, badgeLocation, artistName, padding, true, isLean, isVerified, platformClass)
-        : ShowHumanBadge(humanWidth, badgeLocation, artistName, padding, true, isLean, isVerified, platformClass);
-
     if (skipElement) {
-        const localStatus = await getLocalStatus(artistName, platformClass);
+        // 'white', 'black', or false. 'black' also covers personal blocks
+        // (artist, song, or a word in the title), which needs songTitle.
+        const localStatus = await getLocalStatus(artistName, platformClass, songTitle);
 
         let effectiveTug = tugPct;
         if (localStatus === 'black') {

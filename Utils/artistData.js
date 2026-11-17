@@ -80,3 +80,4 @@ async function getArtistStatus(artist, platformClass, forcedRefresh) { // checks
     await updateCache(key, liveData);
     return liveData;
 }
+

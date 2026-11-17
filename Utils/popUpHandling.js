@@ -11,6 +11,9 @@
 //   - supabase                    (supabase-js global)
 //   - getArtistStatus(artist, platformClass, flag)
 //   - window.renderLocalListBanner(...)   [optional]
+//   - from localListBanner.js (needed by the Personal view): PERSONAL_STORAGE_KEY,
+//     normalizeKey, songKey, normalizePersonalBlock, loadPersonalBlock,
+//     savePersonalBlock, tokenizeTitle
 //
 // Layout of this file:
 //   1. Config & constants
@@ -59,6 +62,13 @@ const POPUP_WIDTH = 360;
 const POPUP_MARGIN = 12;
 const POPUP_FALLBACK_HEIGHT = 260;
 const HIDE_DELAY_MS = 300;
+
+// Most term chips shown in the Personal view.
+const MAX_TERMS = 16;
+
+// The card has two views (AI, Personal) picked with the switcher in the footer.
+// The third switcher button (Settings) opens the extension's settings page.
+const VIEWS = ['ai', 'personal'];
 
 const DEFAULT_STATUS = {
     out_human: 0,
@@ -122,6 +132,33 @@ const LOCK_ICON = `
         "/>
     </svg>
 `;
+
+
+const SWITCH_ICONS = {
+    ai: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>
+            <path d="M19 15v4M17 17h4"/>
+        </svg>
+    `,
+    personal: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+    `,
+    settings: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 6h8.5M17.5 6H20M4 12h1.5M10.5 12H20M4 18h6.5M15.5 18H20"/>
+            <circle cx="15" cy="6" r="2.5"/>
+            <circle cx="8" cy="12" r="2.5"/>
+            <circle cx="13" cy="18" r="2.5"/>
+        </svg>
+    `
+};
 
 
 // -----------------------------------------------------------------------------
@@ -204,7 +241,7 @@ async function fetchArtistStatus(artist, platformClass) {
     }
 }
 
-async function castVote(artistName, type, badge, platformClass) {
+async function castVote(artistName, type, badge, platformClass, songTitle) {
     try {
         const { error } = await window.supabaseClient.rpc('handle_vote', {
             artist_id_input: artistName,
@@ -214,7 +251,7 @@ async function castVote(artistName, type, badge, platformClass) {
         if (error) console.error(LOG_PREFIX, 'handle_vote error:', error);
 
         // Re-open the popup so it shows the fresh counts.
-        window.showPopup(null, badge, null, artistName, platformClass);
+        window.showPopup(null, badge, null, artistName, platformClass, songTitle);
     } catch (err) {
         console.error(LOG_PREFIX, 'Vote failed:', err);
     }
@@ -243,6 +280,15 @@ const POPUP_CSS = `
         --bg: #0c0c0e;
         --text: #f4f4f5;
         --dim: #71717a;
+
+        /* Chips */
+        --SelectedColor: var(--ai);
+        --primary: var(--bg);
+        --pad-x: 10px;
+        --pad-x-hover: 14px;
+        --grow: calc(var(--pad-x-hover) - var(--pad-x));
+        --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --easing: cubic-bezier(0.4, 0, 0.2, 1);
     }
 
 
@@ -304,9 +350,7 @@ const POPUP_CSS = `
 
     /* Keep real content above the glow orb */
     .top,
-    .meter-bar,
-    .stats,
-    .btns,
+    .views,
     .footer {
         position: relative;
         z-index: 1;
@@ -608,7 +652,7 @@ const POPUP_CSS = `
 
 
     /* ======================================================================
-       Footer: skip settings + report link
+       Footer: skip settings / blocking toggle (left) + view switcher (right)
        ====================================================================== */
 
     .footer {
@@ -618,6 +662,40 @@ const POPUP_CSS = `
 
         padding-top: 12px;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Left side of the footer: the Personal view swaps the skip settings
+       for the "Personal blocking enabled" checkbox */
+    .footer-ctx {
+        display: none;
+    }
+
+    .card[data-view="personal"] .footer-ctx {
+        display: flex;
+    }
+
+    .card[data-view="personal"] .skip {
+        display: none;
+    }
+
+    .pb-toggle {
+        align-items: center;
+        gap: 7px;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .pb-toggle input {
+        width: 14px;
+        height: 14px;
+        margin: 0;
+
+        accent-color: var(--ai);
+        cursor: pointer;
     }
 
     .skip {
@@ -736,47 +814,227 @@ const POPUP_CSS = `
 
 
     /* ======================================================================
-       "Report Mistake?" pill (expands on hover)
+       Views (AI / Personal share one card; data-view picks one)
        ====================================================================== */
 
-    .appeal {
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-
-        max-width: 65px;
-        padding: 5px 12px;
-
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 100px;
-        cursor: pointer;
-
-        color: #a1a1aa;
-        font-size: 11px;
-        font-weight: 600;
-        text-decoration: none;
-        white-space: nowrap;
-
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+    .view {
+        display: none;
+        animation: view-in 0.2s ease;
     }
 
-    .appeal:hover {
-        max-width: 180px;
-        background: rgba(255, 255, 255, 0.15);
+    .card[data-view="ai"] .view-ai,
+    .card[data-view="personal"] .view-personal {
+        display: block;
+    }
+
+    @keyframes view-in {
+        from { opacity: 0; transform: translateY(4px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .view { animation: none; }
+        .sw-thumb { transition: none; }
+    }
+
+
+    /* ======================================================================
+       Personal view: term chips, scope chips, Cancel / Block
+       ====================================================================== */
+
+    .terms-block {
+        margin-bottom: 12px;
+    }
+
+    .p-head {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+
+        margin-bottom: 8px;
+    }
+
+    .p-title {
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .p-hint {
+        color: var(--dim);
+        font-size: 10px;
+        font-weight: 500;
+    }
+
+    .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+
+        /* Room so a shifted/expanded edge chip isn't clipped */
+        padding: 0 var(--grow);
+    }
+
+    .grid.scope {
+        margin-bottom: 14px;
+    }
+
+    .chip-inactive,
+    .chip-active {
+        box-sizing: border-box;
+        height: 30px;
+        min-width: 0;
+        margin: 0;
+        padding: 6px var(--pad-x);
+        flex-shrink: 1;
+
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1;
+
+        white-space: nowrap;
+        cursor: pointer;
+
+        transition:
+            padding 0.3s var(--spring),
+            margin 0.3s var(--spring),
+            translate 0.3s var(--spring),
+            border-radius 0.15s var(--easing);
+    }
+
+    .chip-inactive {
+        background-color: transparent;
+        border: 3px solid #ffffff;
+        border-radius: 10px;
+        color: #ffffff;
+    }
+
+    .chip-active {
+        background-color: var(--SelectedColor);
+        border: 3px solid var(--SelectedColor);
+        border-radius: 20px;
+        color: var(--primary);
+    }
+
+    /* Hovered chip: looks wider, but its layout footprint is unchanged
+       (padding grows, margin shrinks by the same amount on each side),
+       so rows never re-wrap. */
+    .chip-inactive:hover,
+    .chip-active:hover {
+        padding: 6px var(--pad-x-hover);
+        margin-inline: calc(var(--grow) * -1);
+    }
+
+    /* Visual "push": siblings slide out of the way using translate
+       (no layout effect). */
+    .grid > :is(.chip-inactive, .chip-active):hover ~ :is(.chip-inactive, .chip-active) {
+        translate: var(--grow) 0;
+    }
+
+    .grid > :is(.chip-inactive, .chip-active):has(~ :is(.chip-inactive, .chip-active):hover) {
+        translate: calc(var(--grow) * -1) 0;
+    }
+
+    /* "This song" when the song title isn't available */
+    .chip-inactive:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+    }
+
+    /* Cancel / Block reuse the vote buttons (.btns > .btn).
+       Block is .btn-a (red); Cancel is .btn-c, a neutral twin of .btn-h / .btn-a. */
+    .btn-c {
+        background: var(--text);
+        border-color: var(--text);
+        color: var(--bg);
+    }
+
+    .btn-c:hover {
+        background: transparent !important;
         color: var(--text);
     }
 
-    .full {
-        width: 0;
-        margin-left: 0;
-        opacity: 0;
-        transition: 0.3s;
+    /* Block is disabled until something changes */
+    .p-block:disabled {
+        opacity: 0.4;
+        cursor: default;
+        pointer-events: none;
     }
 
-    .appeal:hover .full {
-        width: auto;
-        margin-left: 4px;
-        opacity: 1;
+
+    /* ======================================================================
+       View switcher (pill with a sliding thumb)
+       ====================================================================== */
+
+    .switcher {
+        position: relative;
+
+        display: flex;
+        gap: 2px;
+
+        margin-left: auto;
+        padding: 3px;
+
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 100px;
+    }
+
+    .sw-thumb {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+
+        width: 28px;
+        height: 28px;
+
+        background: var(--text);
+        border-radius: 50%;
+
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card[data-view="personal"] .sw-thumb { transform: translateX(30px); }
+    .card[data-view="settings"] .sw-thumb { transform: translateX(60px); }
+
+    .sw-btn {
+        position: relative;
+        z-index: 1;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 28px;
+        height: 28px;
+        padding: 0;
+
+        background: none;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+
+        color: #a1a1aa;
+        transition: color 0.2s;
+    }
+
+    .sw-btn svg {
+        display: block;
+        width: 16px;
+        height: 16px;
+    }
+
+    .sw-btn:hover {
+        color: var(--text);
+    }
+
+    .sw-btn[aria-pressed="true"],
+    .sw-btn[aria-pressed="true"]:hover {
+        color: #0c0c0e;
+    }
+
+    .sw-btn:focus-visible {
+        outline: 2px solid var(--human);
+        outline-offset: 1px;
     }
 `;
 
@@ -809,29 +1067,55 @@ function buildCardHtml(artist) {
             </div>
         </div>
 
-        <!-- Human vs AI meter -->
-        <div class="meter-bar">
-            <div class="fill skeleton" style="width: 100%;"></div>
+        <!-- Views: only the one matching card[data-view] is visible -->
+        <div class="views">
+
+            <!-- AI: meter, vote counts, vote buttons -->
+            <section class="view view-ai">
+                <div class="meter-bar">
+                    <div class="fill skeleton" style="width: 100%;"></div>
+                </div>
+
+                <div class="stats">
+                    <span class="stat-val" style="color: #3f3f46;">
+                        <span class="plus">+</span>0<span class="stat-label">human</span>
+                    </span>
+
+                    <span class="stat-val" style="color: #3f3f46;">
+                        <span class="plus">+</span>0<span class="stat-label">AI</span>
+                    </span>
+                </div>
+
+                <!-- Vote buttons (disabled until data loads) -->
+                <div class="btns">
+                    <button class="btn btn-h" disabled>Human</button>
+                    <button class="btn btn-a" disabled>AI</button>
+                </div>
+            </section>
+
+            <!-- Personal: block by term / artist / song (filled in by renderPersonal) -->
+            <section class="view view-personal">
+                <div class="terms-block">
+                    <div class="p-head">
+                        <span class="p-title">Terms</span>
+                        <span class="p-hint">click a term to block it</span>
+                    </div>
+                    <div class="grid" id="term-chips"></div>
+                </div>
+
+                <div class="grid scope">
+                    <button type="button" class="chip-inactive" id="scope-artist">Artist</button>
+                    <button type="button" class="chip-inactive" id="scope-song">This song</button>
+                </div>
+
+                <div class="btns">
+                    <button type="button" class="btn btn-c" id="p-cancel">Cancel</button>
+                    <button type="button" class="btn btn-a p-block" id="p-block" disabled>Block</button>
+                </div>
+            </section>
         </div>
 
-        <!-- Vote counts -->
-        <div class="stats">
-            <span class="stat-val" style="color: #3f3f46;">
-                <span class="plus">+</span>0<span class="stat-label">human</span>
-            </span>
-
-            <span class="stat-val" style="color: #3f3f46;">
-                <span class="plus">+</span>0<span class="stat-label">AI</span>
-            </span>
-        </div>
-
-        <!-- Vote buttons (disabled until data loads) -->
-        <div class="btns">
-            <button class="btn btn-h" disabled>Human</button>
-            <button class="btn btn-a" disabled>AI</button>
-        </div>
-
-        <!-- Footer: skip settings + report link -->
+        <!-- Footer: skip settings (AI view) or blocking toggle (Personal view), plus the switcher -->
         <div class="footer">
             <div class="skip">
                 Skip past
@@ -862,14 +1146,21 @@ function buildCardHtml(artist) {
                 <span class="ai-label">votes</span>
             </div>
 
-            <a
-                href="${WIKI_APPEAL}"
-                target="_blank"
-                class="appeal"
-            >
-                <span>Report</span>
-                <span class="full">Mistake?</span>
-            </a>
+            <label class="footer-ctx pb-toggle">
+                <input type="checkbox" id="pb-enabled">
+                Personal blocking enabled
+            </label>
+
+            <div class="switcher" role="group" aria-label="Popup view">
+                <span class="sw-thumb"></span>
+                <button type="button" class="sw-btn" data-view="ai"
+                        title="AI" aria-label="AI" aria-pressed="true">${SWITCH_ICONS.ai}</button>
+                <button type="button" class="sw-btn" data-view="personal"
+                        title="Personal" aria-label="Personal" aria-pressed="false">${SWITCH_ICONS.personal}</button>
+                <!-- Not a view: opens the settings page in a new tab -->
+                <button type="button" class="sw-btn" data-action="settings"
+                        title="Settings" aria-label="Settings">${SWITCH_ICONS.settings}</button>
+            </div>
         </div>
     `;
 }
@@ -891,6 +1182,7 @@ function buildPopup(artist) {
 
     const card = document.createElement('div');
     card.className = 'card';
+    card.dataset.view = 'ai';
     card.innerHTML = buildCardHtml(artist);
 
     shadow.appendChild(style);
@@ -988,7 +1280,7 @@ function renderStats(shadow, status, verdict) {
     `;
 }
 
-function renderVoteButtons(shadow, artist, status, badge, platformClass) {
+function renderVoteButtons(shadow, artist, status, badge, platformClass, songTitle) {
     const btns = shadow.querySelector('.btns');
 
     if (status.out_verified) {
@@ -1007,8 +1299,8 @@ function renderVoteButtons(shadow, artist, status, badge, platformClass) {
     if (status.my_current_vote === 'human') humanBtn.classList.add('voted-h');
     if (status.my_current_vote === 'ai')    aiBtn.classList.add('voted-a');
 
-    humanBtn.onclick = () => castVote(artist, 'human', badge, platformClass);
-    aiBtn.onclick    = () => castVote(artist, 'ai', badge, platformClass);
+    humanBtn.onclick = () => castVote(artist, 'human', badge, platformClass, songTitle);
+    aiBtn.onclick    = () => castVote(artist, 'ai', badge, platformClass, songTitle);
 }
 
 function updateThresholdWarning(inputEl) {
@@ -1050,12 +1342,192 @@ function renderSettings(shadow, threshold, minVotes) {
     minInput.onchange = (e) => chrome.storage.local.set({ minVotes: e.target.value });
 }
 
+function setView(shadow, host, view) {
+    const card = shadow.querySelector('.card');
+    if (!VIEWS.includes(view) || card.dataset.view === view) return;
+
+    const prevBottom = host.getBoundingClientRect().bottom;
+
+    card.dataset.view = view;
+    shadow.querySelectorAll('.sw-btn[data-view]').forEach((btn) => {
+        btn.setAttribute('aria-pressed', String(btn.dataset.view === view));
+    });
+
+    const newHeight = host.getBoundingClientRect().height;
+    const maxTop = window.innerHeight - newHeight - POPUP_MARGIN;
+    const top = Math.max(POPUP_MARGIN, Math.min(prevBottom - newHeight, maxTop));
+    host.style.top = `${top}px`;
+}
+
+// Content scripts cant open extension pages for a reason i dont care to learn. This asks the background script to do it
+async function openSettingsPage() {
+    try {
+        await chrome.runtime.sendMessage({ type: 'open-settings' });
+    } catch (err) {
+        console.error(LOG_PREFIX, 'Could not open settings page:', err);
+    }
+}
+
+function renderSwitcher(shadow, host) {
+    // AI and Personal switch the card's view.
+    shadow.querySelectorAll('.sw-btn[data-view]').forEach((btn) => {
+        btn.onclick = () => setView(shadow, host, btn.dataset.view);
+    });
+
+    // Settings leaves the popup for its own page.
+    shadow.querySelector('.sw-btn[data-action="settings"]').onclick = openSettingsPage;
+}
+
+// Chips swap between two classes: outlined (inactive) and filled (active).
+function setChipActive(chip, isActive) {
+    chip.classList.toggle('chip-active', isActive);
+    chip.classList.toggle('chip-inactive', !isActive);
+}
+
+function renderPersonal(shadow, host, artist, songTitle, personalBlock) {
+    const termsBlock = shadow.querySelector('.terms-block');
+    const termChips = shadow.querySelector('#term-chips');
+    const artistChip = shadow.querySelector('#scope-artist');
+    const songChip = shadow.querySelector('#scope-song');
+    const blockBtn = shadow.querySelector('#p-block');
+    const cancelBtn = shadow.querySelector('#p-cancel');
+    const enabledBox = shadow.querySelector('#pb-enabled');
+
+    const artistKey = normalizeKey(artist);
+    const terms = songTitle ? tokenizeTitle(songTitle, MAX_TERMS) : [];
+    const termKeys = terms.map((t) => normalizeKey(t));
+
+    const readSaved = (pb) => ({
+        artist: pb.artists.includes(artistKey),
+        song: Boolean(songTitle) && pb.songs.includes(songKey(artist, songTitle)),
+        terms: new Set(termKeys.filter((k) => pb.terms.includes(k)))
+    });
+
+    let saved = readSaved(personalBlock);
+    const selected = {
+        artist: saved.artist,
+        song: saved.song,
+        terms: new Set(saved.terms)
+    };
+
+    const countChanges = () => {
+        let adds = 0;
+        let removes = 0;
+        const tally = (now, was) => {
+            if (now && !was) adds++;
+            if (!now && was) removes++;
+        };
+        tally(selected.artist, saved.artist);
+        tally(selected.song, saved.song);
+        termKeys.forEach((k) => tally(selected.terms.has(k), saved.terms.has(k)));
+        return { adds, removes };
+    };
+
+    const refresh = () => {
+        setChipActive(artistChip, selected.artist);
+        setChipActive(songChip, selected.song);
+        termChips.querySelectorAll('button').forEach((chip) => {
+            setChipActive(chip, selected.terms.has(chip.dataset.key));
+        });
+
+        const { adds, removes } = countChanges();
+        blockBtn.disabled = adds + removes === 0;
+        blockBtn.textContent = adds && removes ? 'Save' : removes ? 'Unblock' : 'Block';
+    };
+
+    
+    termChips.textContent = '';
+    terms.forEach((term, i) => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'chip-inactive';
+        chip.dataset.key = termKeys[i];
+        chip.textContent = term;
+        chip.onclick = () => {
+            if (selected.terms.has(termKeys[i])) selected.terms.delete(termKeys[i]);
+            else selected.terms.add(termKeys[i]);
+            refresh();
+        };
+        termChips.appendChild(chip);
+    });
+    termsBlock.style.display = terms.length ? '' : 'none';
+
+
+    artistChip.onclick = () => {
+        selected.artist = !selected.artist;
+        refresh();
+    };
+    songChip.disabled = !songTitle;
+    songChip.title = songTitle || 'Song title not available here';
+    songChip.onclick = () => {
+        selected.song = !selected.song;
+        refresh();
+    };
+
+    // Cancel button --------------------------------------------------------------------------------
+    cancelBtn.onclick = () => {
+        selected.artist = saved.artist;
+        selected.song = saved.song;
+        selected.terms = new Set(saved.terms);
+        refresh();
+        setView(shadow, host, 'ai');
+    };
+
+    // Block button --------------------------------------------------------------------------------
+    blockBtn.onclick = async () => {
+        blockBtn.disabled = true;
+        try {
+            // Re-read so changes made in another tab are not overwritten.
+            const pb = await loadPersonalBlock();
+            const setMember = (list, value, on) => {
+                const without = list.filter((v) => v !== value);
+                return on ? [...without, value] : without;
+            };
+
+            pb.artists = setMember(pb.artists, artistKey, selected.artist);
+            if (songTitle) {
+                pb.songs = setMember(pb.songs, songKey(artist, songTitle), selected.song);
+            }
+            termKeys.forEach((k) => {
+                pb.terms = setMember(pb.terms, k, selected.terms.has(k));
+            });
+
+            await savePersonalBlock(pb);
+            saved = readSaved(pb);
+            blockBtn.textContent = 'Saved';
+
+            setTimeout(() => {
+                if (!host.isConnected) return;
+                refresh();
+                setView(shadow, host, 'ai');
+            }, 700);
+        } catch (err) {
+            console.error(LOG_PREFIX, 'Saving personal block failed:', err);
+            refresh();
+        }
+    };
+
+    
+    enabledBox.checked = personalBlock.enabled;
+    enabledBox.onchange = async () => {
+        try {
+            const pb = await loadPersonalBlock();
+            pb.enabled = enabledBox.checked;
+            await savePersonalBlock(pb);
+        } catch (err) {
+            console.error(LOG_PREFIX, 'Saving personal blocking toggle failed:', err);
+        }
+    };
+
+    refresh();
+}
+
 
 // -----------------------------------------------------------------------------
 // 9. Public entry points
 // -----------------------------------------------------------------------------
 
-window.showPopup = async function (container, badge, human, artist, platformClass) {
+window.showPopup = async function (container, badge, human, artist, platformClass, songTitle) {
     clearTimeout(hideTimer);
     removeExistingPopup();
 
@@ -1067,7 +1539,7 @@ window.showPopup = async function (container, badge, human, artist, platformClas
     // Load vote status and saved settings in parallel.
     const [status, settings] = await Promise.all([
         getArtistStatus(artist, platformClass, true),
-        chrome.storage.local.get(['threshold', 'minVotes'])
+        chrome.storage.local.get(['threshold', 'minVotes', PERSONAL_STORAGE_KEY])
     ]);
 
     // Popup was dismissed while we were loading.
@@ -1080,11 +1552,13 @@ window.showPopup = async function (container, badge, human, artist, platformClas
     renderHeader(shadow, artist, status, verdict);
     renderMeter(shadow, verdict);
     renderStats(shadow, status, verdict);
-    renderVoteButtons(shadow, artist, status, badge, platformClass);
+    renderVoteButtons(shadow, artist, status, badge, platformClass, songTitle);
     renderSettings(shadow, threshold, minVotes);
+    renderPersonal(shadow, host, artist, songTitle, normalizePersonalBlock(settings[PERSONAL_STORAGE_KEY]));
+    renderSwitcher(shadow, host);
 
     if (typeof window.renderLocalListBanner === 'function') {
-        await window.renderLocalListBanner(shadow, artist, platformClass, status, badge, verdict.label);
+        await window.renderLocalListBanner(shadow, artist, platformClass, status, badge, verdict.label, songTitle);
     }
 
     requestAnimationFrame(() => positionPopup(host, badge));

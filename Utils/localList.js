@@ -67,11 +67,21 @@ async function removeLocal(key) {
     await chrome.storage.local.remove(key);
 }
 
-async function getLocalStatus(artist, platformClass) {
+// The whitelist/blacklist override for this artist only: 'white', 'black', or false.
+// The popup banner uses this one so its "Remove" button always matches what it shows.
+async function getListStatus(artist, platformClass) {
     const key = `sp_local_${platformClass}_${artist.toLowerCase().trim()}`;
     const localData = await consultLocal(key);
     console.log(`[SoundProof] Local check for ${artist} on ${platformClass}:`, localData ? localData : 'none');
     return localData; // 'white', 'black', or false
+}
+
+async function getLocalStatus(artist, platformClass, songTitle) {
+    if (await isPersonallyBlocked(artist, songTitle)) {
+        console.log(`[SoundProof] Personal block hit for ${artist}${songTitle ? ` - ${songTitle}` : ''}`);
+        return 'black';
+    }
+    return getListStatus(artist, platformClass);
 }
 
 window.getLocalStatus = getLocalStatus;
@@ -238,7 +248,8 @@ function injectLocalListStyles(shadow) {
     shadow.appendChild(style);
 }
 
-async function renderLocalListBanner(shadow, artist, platformClass, status, badge, label) {
+// songTitle is only passed along so the popup can re-open with it after a click.
+async function renderLocalListBanner(shadow, artist, platformClass, status, badge, label, songTitle) {
     injectLocalListStyles(shadow);
     const banner = shadow.querySelector('#locallist-banner');
     if (!banner) return;
@@ -252,7 +263,8 @@ async function renderLocalListBanner(shadow, artist, platformClass, status, badg
         return;
     }
 
-    const localStatus = await getLocalStatus(artist, platformClass);
+    // List override only (not personal blocks), so "Remove" always does what it says.
+    const localStatus = await getListStatus(artist, platformClass);
     banner.style.display = 'flex';
 
     if (localStatus === 'white') {
@@ -314,16 +326,85 @@ async function renderLocalListBanner(shadow, artist, platformClass, status, badg
     const rBtn = shadow.querySelector('#ll-remove');
     if (wBtn) wBtn.onclick = async () => {
         await setLocalStatus(artist, platformClass, 'white');
-        window.showPopup(null, badge, null, artist, platformClass);
+        window.showPopup(null, badge, null, artist, platformClass, songTitle);
     };
     if (bBtn) bBtn.onclick = async () => {
         await setLocalStatus(artist, platformClass, 'black');
-        window.showPopup(null, badge, null, artist, platformClass);
+        window.showPopup(null, badge, null, artist, platformClass, songTitle);
     };
     if (rBtn) rBtn.onclick = async () => {
         await clearLocalStatus(artist, platformClass);
-        window.showPopup(null, badge, null, artist, platformClass);
+        window.showPopup(null, badge, null, artist, platformClass, songTitle);
     };
 }
 
 window.renderLocalListBanner = renderLocalListBanner;
+
+
+
+// --- Personal blocking -------------------------------------------------------
+// Stored under PERSONAL_STORAGE_KEY as:
+//   { enabled: bool, artists: [...], songs: [...], terms: [...] }
+// Every entry is lowercase. Terms match whole words of a song title.
+// getLocalStatus() (above) is what reads this; popUpHandling.js is what writes it.
+
+const PERSONAL_STORAGE_KEY = 'personalBlock';
+
+function normalizeKey(str) {
+    return String(str).trim().toLowerCase();
+}
+
+function songKey(artist, title) {
+    return `${normalizeKey(artist)} - ${normalizeKey(title)}`;
+}
+
+function normalizePersonalBlock(raw) {
+    const pb = raw && typeof raw === 'object' ? raw : {};
+    return {
+        enabled: pb.enabled !== false,
+        artists: Array.isArray(pb.artists) ? [...pb.artists] : [],
+        songs: Array.isArray(pb.songs) ? [...pb.songs] : [],
+        terms: Array.isArray(pb.terms) ? [...pb.terms] : []
+    };
+}
+
+async function loadPersonalBlock() {
+    const stored = await chrome.storage.local.get(PERSONAL_STORAGE_KEY);
+    return normalizePersonalBlock(stored[PERSONAL_STORAGE_KEY]);
+}
+
+function savePersonalBlock(pb) {
+    return chrome.storage.local.set({ [PERSONAL_STORAGE_KEY]: pb });
+}
+
+// Splits a song title into terms: whitespace separated, punctuation trimmed
+// from both ends, duplicates dropped. The popup shows these as chips, and
+// isPersonallyBlocked() matches against the same terms.
+function tokenizeTitle(title, limit = Infinity) {
+    const seen = new Set();
+    const terms = [];
+    for (const raw of String(title).split(/\s+/)) {
+        const term = raw.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '');
+        const key = normalizeKey(term);
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+        terms.push(term);
+        if (terms.length >= limit) break;
+    }
+    return terms;
+}
+
+// True if the user personally blocked this artist, this song, or any word in its title.
+async function isPersonallyBlocked(artist, songTitle) {
+    try {
+        const pb = await loadPersonalBlock();
+        if (!pb.enabled) return false;
+        if (pb.artists.includes(normalizeKey(artist))) return true;
+        if (!songTitle) return false;
+        if (pb.songs.includes(songKey(artist, songTitle))) return true;
+        return tokenizeTitle(songTitle).some((term) => pb.terms.includes(normalizeKey(term)));
+    } catch (err) {
+        console.error("Error reading personal blocklist:", err);
+        return false;
+    }
+}

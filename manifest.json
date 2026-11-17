@@ -3,6 +3,13 @@
   "name": "Detect & Skip AI Music - SoundProof",
   "version": "6.0.5",
   "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "Utils/options_page.html",
+    "open_in_tab": true
+  },
   "host_permissions": ["https://solsneywdlhvwbtghopw.supabase.co/*"],
   "icons": {
     "16": "Icons/Icon16.png",
