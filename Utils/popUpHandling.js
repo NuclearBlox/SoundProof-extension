@@ -135,29 +135,9 @@ const LOCK_ICON = `
 
 
 const SWITCH_ICONS = {
-    ai: `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>
-            <path d="M19 15v4M17 17h4"/>
-        </svg>
-    `,
-    personal: `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="8" r="4"/>
-            <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>
-        </svg>
-    `,
-    settings: `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 6h8.5M17.5 6H20M4 12h1.5M10.5 12H20M4 18h6.5M15.5 18H20"/>
-            <circle cx="15" cy="6" r="2.5"/>
-            <circle cx="8" cy="12" r="2.5"/>
-            <circle cx="13" cy="18" r="2.5"/>
-        </svg>
-    `
+    ai: '<span class="sw-icon-ai" aria-hidden="true"></span>',
+    personal: '<span class="sw-icon-personal" aria-hidden="true"></span>',
+    settings: '<span class="sw-icon-settings" aria-hidden="true"></span>'
 };
 
 
@@ -1017,10 +997,28 @@ const POPUP_CSS = `
         transition: color 0.2s;
     }
 
-    .sw-btn svg {
+    .sw-btn .sw-icon-ai,
+    .sw-btn .sw-icon-personal,
+    .sw-btn .sw-icon-settings {
         display: block;
         width: 16px;
         height: 16px;
+        background-color: currentColor;
+    }
+
+    .sw-btn .sw-icon-ai {
+        -webkit-mask: url("${chrome.runtime.getURL('Badges/spIsolate.png')}") center / contain no-repeat;
+        mask: url("${chrome.runtime.getURL('Badges/spIsolate.png')}") center / contain no-repeat;
+    }
+
+    .sw-btn .sw-icon-personal {
+        -webkit-mask: url("${chrome.runtime.getURL('Badges/personEdit.png')}") center / contain no-repeat;
+        mask: url("${chrome.runtime.getURL('Badges/personEdit.png')}") center / contain no-repeat;
+    }
+
+    .sw-btn .sw-icon-settings {
+        -webkit-mask: url("${chrome.runtime.getURL('Badges/settings.png')}") center / contain no-repeat;
+        mask: url("${chrome.runtime.getURL('Badges/settings.png')}") center / contain no-repeat;
     }
 
     .sw-btn:hover {
@@ -1057,7 +1055,7 @@ function buildCardHtml(artist) {
                     target="_blank"
                     class="sub"
                 >
-                    How it works &amp; FAQ →
+                    Report mistakes &amp; FAQ →
                 </a>
             </div>
 
